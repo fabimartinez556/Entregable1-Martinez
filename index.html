@@ -7,21 +7,25 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
+    <main>
     <h1>Simulador de Adopción de Mascotas</h1>
+    
+    <p id="descripcion" role="note">
+      Este simulador te ayudará a encontrar una mascota ideal para adoptar,
+      según tus preferencias. Toda la interacción se realiza a través de la
+      consola y cuadros de diálogo.
+    </p>
+    
+    <p id="abrirConsola">
+      Por favor, abrí la consola del navegador (F12 o Ctrl+Shift+I) para ver las
+      mascotas disponibles.
+    </p>
+    
+    <button id="botonIniciar" class="botonSimulador" onclick="iniciarSimulador()">Iniciar búsqueda</button>
+    <button class="botonSimulador" onclick="listarMascotasDetallado()">Ver todas las mascotas</button>
 
-<p id="descripcion" role="note">
-  Este simulador te ayudará a encontrar una mascota ideal para adoptar,
-  según tus preferencias. Toda la interacción se realiza a través de la
-  consola y cuadros de diálogo.
-</p>
-
-<p id="abrirConsola" style="color: red; font-weight: bold; display: none">
-  Por favor, abrí la consola del navegador (F12 o Ctrl+Shift+I) para ver las
-  mascotas disponibles.
-</p>
-<button id="botonSimulador" onclick="iniciarSimulador()">Iniciar búsqueda</button>
-<button id="botonSimulador" onclick="listarMascotas()">Ver todas las mascotas</button>
-
+    </main>
+    
     <script src="js/adopcion.js"></script>
   </body>
 </html>

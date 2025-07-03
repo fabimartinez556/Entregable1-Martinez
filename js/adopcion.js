@@ -12,6 +12,9 @@ let mascotas = [
   { nombre: "Coco", tipo: "gato", tamaño: "pequeño", edad: 4, raza: "Mestizo", descripcion: "Amigable y curioso, le encanta explorar." },
 ];
 
+// Copia base para resetear
+const mascotasBase = [...mascotas];
+
 // Cargar desde localStorage (si existe)
 const guardadas = localStorage.getItem("mascotas");
 if (guardadas) {
@@ -27,7 +30,14 @@ function guardarMascotas() {
   localStorage.setItem("mascotas", JSON.stringify(mascotas));
 }
 
-// Función para pedir texto con control de cancelación y validación simple
+// Mostrar u ocultar aviso para abrir consola
+function mostrarAvisoConsola(mostrar) {
+  const aviso = document.getElementById("abrirConsola");
+  if (!aviso) return;
+  aviso.style.display = mostrar ? "block" : "none";
+}
+
+// Función para pedir texto con validación
 function pedirTexto(mensaje, opcionesValidas = null) {
   while (true) {
     let input = prompt(mensaje);
@@ -37,24 +47,15 @@ function pedirTexto(mensaje, opcionesValidas = null) {
     }
     input = input.trim().toLowerCase();
     if (!input) continue;
-
     if (opcionesValidas && !opcionesValidas.includes(input)) {
       alert(`Por favor, ingresa una opción válida: ${opcionesValidas.join(", ")}`);
       continue;
     }
-
     return input;
   }
 }
 
-// Mostrar u ocultar aviso para abrir consola
-function mostrarAvisoConsola(mostrar) {
-  const aviso = document.getElementById("abrirConsola");
-  if (!aviso) return;
-  aviso.style.display = mostrar ? "block" : "none";
-}
-
-// Función para solicitar las preferencias del usuario con validaciones
+// Solicitar preferencias del usuario
 function solicitarPreferencias() {
   const tipo = pedirTexto("¿Qué tipo de mascota preferís adoptar? (perro/gato)", ["perro", "gato"]);
   if (!tipo) return null;
@@ -77,21 +78,25 @@ function solicitarPreferencias() {
   return { tipo, tamaño, edadMax };
 }
 
-// Función que filtra mascotas según preferencias
+// Filtrar mascotas por preferencias
 function filtrarMascotas({ tipo, tamaño, edadMax }) {
   return mascotas.filter(
     (m) => m.tipo === tipo && m.tamaño === tamaño && m.edad <= edadMax
   );
 }
 
-// Mostrar resultado en consola y pedir si quiere adoptar
+// Mostrar resultados detallados en consola
 function mostrarResultado(mascotasFiltradas) {
   console.clear();
   console.log("---- RESULTADO DEL SIMULADOR ----");
 
   if (mascotasFiltradas.length === 0) {
     alert("No encontramos una mascota con esas características.");
-    mostrarAvisoConsola(false);
+    if (confirm("¿Querés intentarlo de nuevo?")) {
+      iniciarSimulador();
+    } else {
+      mostrarAvisoConsola(false);
+    }
     return;
   }
 
@@ -120,8 +125,8 @@ function mostrarResultado(mascotasFiltradas) {
   }
 }
 
-// Listar todas las mascotas
-function listarMascotas() {
+// Mostrar todas las mascotas (detallado)
+function listarMascotasDetallado() {
   console.clear();
   if (mascotas.length === 0) {
     alert("No hay mascotas en el sistema.");
@@ -140,10 +145,10 @@ function listarMascotas() {
       `-----------------------------`
     );
   });
-  mostrarAvisoConsola(true); // Muestra aviso para abrir consola si lo tenés
+  mostrarAvisoConsola(true);
 }
 
-// Agregar nueva mascota al sistema
+// Agregar nueva mascota
 function agregarMascota() {
   const nombre = pedirTexto("Nombre de la mascota:");
   if (!nombre) return;
@@ -178,7 +183,7 @@ function agregarMascota() {
   console.log("Mascota agregada:", mascotas[mascotas.length - 1]);
 }
 
-// Eliminar mascota por nombre (insensible a mayúsculas/minúsculas)
+// Eliminar mascota por nombre
 function eliminarMascota(nombre) {
   const index = mascotas.findIndex(
     (m) => m.nombre.toLowerCase() === nombre.toLowerCase()
@@ -192,26 +197,14 @@ function eliminarMascota(nombre) {
   }
 }
 
-// Listar todas las mascotas (útil para depuración o mostrar todo)
-function listarMascotas() {
-  console.clear();
-  console.log("---- LISTA DE MASCOTAS ----");
-  mascotas.forEach((m, i) => {
-    console.log(
-      `#${i + 1}: ${m.nombre} (${m.tipo}, ${m.tamaño}, ${m.edad} años) - ${m.raza}`
-    );
-  });
-  mostrarAvisoConsola(false);
-}
-
-// Resetear base de datos de mascotas (borrar localStorage)
+// Resetear lista de mascotas
 function resetearMascotas() {
-  localStorage.removeItem("mascotas");
+  mascotas = [...mascotasBase];
+  guardarMascotas();
   alert("🐾 Se reiniciaron los datos de mascotas a la lista base.");
-  mascotas = [...mascotasBase]; // O recargar la página para resetear
 }
 
-// Iniciar simulador principal
+// Iniciar simulador
 function iniciarSimulador() {
   mostrarAvisoConsola(true);
 
@@ -226,7 +219,7 @@ function iniciarSimulador() {
   mostrarResultado(resultados);
 }
 
-// Cancelar simulador y volver a inicio
+// Cancelar simulador
 function cancelarSimulador() {
   alert("Simulación cancelada. Volviendo al inicio...");
   window.location.href = "index.html";
