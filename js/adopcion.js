@@ -1,4 +1,4 @@
-// Lista base ampliada por si no hay mascotas guardadas
+// Lista base si no hay mascotas guardadas
 let mascotas = [
   { nombre: "Luna", tipo: "perro", tamaño: "mediano", edad: 2, raza: "Mestiza", descripcion: "Muy cariñosa, ideal para familias con niños. Le encanta jugar." },
   { nombre: "Milo", tipo: "gato", tamaño: "pequeño", edad: 1, raza: "Siames", descripcion: "Tranquilo y curioso. Perfecto para departamentos pequeños." },
