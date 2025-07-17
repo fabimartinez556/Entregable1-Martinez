@@ -12,10 +12,9 @@ let mascotas = [
   { nombre: "Coco", tipo: "gato", tamaño: "pequeño", edad: 4, raza: "Mestizo", descripcion: "Amigable y curioso, le encanta explorar." },
 ];
 
-// Copia base para resetear
 const mascotasBase = [...mascotas];
 
-// Cargar desde localStorage (si existe)
+// Cargar desde localStorage
 const guardadas = localStorage.getItem("mascotas");
 if (guardadas) {
   try {
@@ -25,19 +24,17 @@ if (guardadas) {
   }
 }
 
-// Guardar en localStorage
 function guardarMascotas() {
   localStorage.setItem("mascotas", JSON.stringify(mascotas));
 }
 
-// Mostrar u ocultar aviso para abrir consola
 function mostrarAvisoConsola(mostrar) {
   const aviso = document.getElementById("abrirConsola");
   if (!aviso) return;
   aviso.style.display = mostrar ? "block" : "none";
 }
 
-// Función para pedir texto con validación
+// opciones válidas
 function pedirTexto(mensaje, opcionesValidas = null) {
   while (true) {
     let input = prompt(mensaje);
@@ -45,17 +42,23 @@ function pedirTexto(mensaje, opcionesValidas = null) {
       cancelarSimulador();
       return null;
     }
-    input = input.trim().toLowerCase();
+    input = input.trim();
     if (!input) continue;
-    if (opcionesValidas && !opcionesValidas.includes(input)) {
-      alert(`Por favor, ingresa una opción válida: ${opcionesValidas.join(", ")}`);
-      continue;
+
+    if (opcionesValidas) {
+      const inputLower = input.toLowerCase();
+      const opcionesLower = opcionesValidas.map(o => o.toLowerCase());
+      if (!opcionesLower.includes(inputLower)) {
+        alert(`Por favor, ingresa una opción válida: ${opcionesValidas.join(", ")}`);
+        continue;
+      }
+      return inputLower;
     }
+
     return input;
   }
 }
 
-// Solicitar preferencias del usuario
 function solicitarPreferencias() {
   const tipo = pedirTexto("¿Qué tipo de mascota preferís adoptar? (perro/gato)", ["perro", "gato"]);
   if (!tipo) return null;
@@ -78,14 +81,12 @@ function solicitarPreferencias() {
   return { tipo, tamaño, edadMax };
 }
 
-// Filtrar mascotas por preferencias
 function filtrarMascotas({ tipo, tamaño, edadMax }) {
   return mascotas.filter(
     (m) => m.tipo === tipo && m.tamaño === tamaño && m.edad <= edadMax
   );
 }
 
-// Mostrar resultados detallados en consola
 function mostrarResultado(mascotasFiltradas) {
   console.clear();
   console.log("---- RESULTADO DEL SIMULADOR ----");
@@ -125,7 +126,6 @@ function mostrarResultado(mascotasFiltradas) {
   }
 }
 
-// Mostrar todas las mascotas (detallado)
 function listarMascotasDetallado() {
   console.clear();
   if (mascotas.length === 0) {
@@ -148,10 +148,16 @@ function listarMascotasDetallado() {
   mostrarAvisoConsola(true);
 }
 
-// Agregar nueva mascota
 function agregarMascota() {
   const nombre = pedirTexto("Nombre de la mascota:");
   if (!nombre) return;
+
+  // Evita duplicados
+  const duplicado = mascotas.find(m => m.nombre.toLowerCase() === nombre.toLowerCase());
+  if (duplicado) {
+    alert(`Ya existe una mascota con el nombre "${nombre}". Por favor elegí otro nombre.`);
+    return;
+  }
 
   const tipo = pedirTexto("Tipo (perro/gato):", ["perro", "gato"]);
   if (!tipo) return;
@@ -183,7 +189,6 @@ function agregarMascota() {
   console.log("Mascota agregada:", mascotas[mascotas.length - 1]);
 }
 
-// Eliminar mascota por nombre
 function eliminarMascota(nombre) {
   const index = mascotas.findIndex(
     (m) => m.nombre.toLowerCase() === nombre.toLowerCase()
@@ -197,14 +202,12 @@ function eliminarMascota(nombre) {
   }
 }
 
-// Resetear lista de mascotas
 function resetearMascotas() {
   mascotas = [...mascotasBase];
   guardarMascotas();
   alert("🐾 Se reiniciaron los datos de mascotas a la lista base.");
 }
 
-// Iniciar simulador
 function iniciarSimulador() {
   mostrarAvisoConsola(true);
 
@@ -219,8 +222,8 @@ function iniciarSimulador() {
   mostrarResultado(resultados);
 }
 
-// Cancelar simulador
+//  no recarga la página
 function cancelarSimulador() {
-  alert("Simulación cancelada. Volviendo al inicio...");
-  window.location.href = "index.html";
+  alert("Simulación cancelada.");
+  mostrarAvisoConsola(false);
 }
