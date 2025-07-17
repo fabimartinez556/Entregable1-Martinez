@@ -60,7 +60,7 @@ function pedirTexto(mensaje, opcionesValidas = null) {
 }
 
 function solicitarPreferencias() {
-  const tipo = pedirTexto("¿Qué tipo de mascota preferís adoptar? (perro/gato)", ["perro", "gato"]);
+  const tipo = pedirTexto("¿Qué tipo de mascota esta buscando adoptar? (perro/gato)", ["perro", "gato"]);
   if (!tipo) return null;
 
   const tamaño = pedirTexto("¿Qué tamaño preferís? (pequeño/mediano/grande)", ["pequeño", "mediano", "grande"]);
@@ -206,6 +206,67 @@ function resetearMascotas() {
   mascotas = [...mascotasBase];
   guardarMascotas();
   alert("🐾 Se reiniciaron los datos de mascotas a la lista base.");
+}
+
+// Buscar mascota por nombre parcial (para usar desde consola o botones)
+function buscarMascotaPorNombre(nombre) {
+  return mascotas.find(m => m.nombre.toLowerCase().includes(nombre.toLowerCase()));
+}
+
+// Filtrado flexible por campo (nombre, raza, tipo, etc.)
+function filtrarMascotasAvanzado() {
+  const campo = pedirTexto("¿Por qué campo querés filtrar? (nombre/raza/edad/tipo/tamaño)", ["nombre", "raza", "edad", "tipo", "tamaño"]);
+  if (!campo) return;
+
+  const valor = pedirTexto(`¿Qué valor querés buscar en ${campo}?`);
+  if (!valor) return;
+
+  let resultado;
+
+  if (campo === "edad") {
+    const edadBuscada = parseInt(valor);
+    if (isNaN(edadBuscada)) {
+      alert("La edad debe ser un número.");
+      return;
+    }
+    resultado = mascotas.filter(m => m.edad === edadBuscada);
+  } else {
+    resultado = mascotas.filter(m => m[campo].toLowerCase().includes(valor.toLowerCase()));
+  }
+
+  if (resultado.length === 0) {
+    alert("No se encontraron mascotas que coincidan.");
+  } else {
+    alert(`Se encontraron ${resultado.length} mascota(s). Mirá la consola para los detalles.`);
+    console.clear();
+    console.log(`---- FILTRO POR ${campo.toUpperCase()} = "${valor}" ----`);
+    resultado.forEach((m, i) => {
+      console.log(
+        `🐾 Mascota #${i + 1}:\n` +
+        `Nombre: ${m.nombre}\n` +
+        `Tipo: ${m.tipo}\n` +
+        `Tamaño: ${m.tamaño}\n` +
+        `Edad: ${m.edad} años\n` +
+        `Raza: ${m.raza}\n` +
+        `Descripción: ${m.descripcion}\n` +
+        `------------------------------`
+      );
+    });
+  }
+}
+
+function buscarPorNombre() {
+  const nombre = prompt("¿Qué nombre querés buscar?");
+  if (!nombre) return;
+  const mascota = buscarMascotaPorNombre(nombre);
+  if (mascota) {
+    console.clear();
+    console.log("Mascota encontrada:");
+    console.log(mascota);
+    alert(`Mascota "${mascota.nombre}" encontrada. Mirá la consola para más detalles.`);
+  } else {
+    alert("No se encontró ninguna mascota con ese nombre.");
+  }
 }
 
 function iniciarSimulador() {
