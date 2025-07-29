@@ -3,26 +3,32 @@ const cuidados = document.getElementById('cuidados');
 const listaAgregadas = document.getElementById('listaAgregadas');
 const tipoSelect = document.getElementById('tipo');
 const saludSelect = document.getElementById('salud');
+const mensajeError = document.getElementById('mensajeError');
 
 tipoSelect.addEventListener('change', function () {
-  if (this.value === 'Otro') {
-    otroTipo.style.display = 'block';
-    otroTipo.focus();
-  } else {
-    otroTipo.style.display = 'none';
-    otroTipo.value = '';
-  }
+  otroTipo.style.display = this.value === 'Otro' ? 'block' : 'none';
+  if (this.value !== 'Otro') otroTipo.value = '';
 });
 
 saludSelect.addEventListener('change', function () {
-  if (this.value === 'Requiere cuidados') {
-    cuidados.style.display = 'block';
-    cuidados.focus();
-  } else {
-    cuidados.style.display = 'none';
-    cuidados.value = '';
-  }
+  cuidados.style.display = this.value === 'Requiere cuidados' ? 'block' : 'none';
+  if (this.value !== 'Requiere cuidados') cuidados.value = '';
 });
+
+function mostrarError(msg) {
+  mensajeError.textContent = msg;
+  mensajeError.style.display = 'block';
+  setTimeout(() => mensajeError.style.display = 'none', 3000);
+}
+
+function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function renderAgregadas() {
   const mascotas = JSON.parse(localStorage.getItem('mascotas')) || [];
@@ -46,13 +52,12 @@ function renderAgregadas() {
       <p><strong>Estado de salud:</strong> ${mascota.salud}</p>
       ${mascota.cuidados ? `<p><strong>Cuidados:</strong> ${mascota.cuidados}</p>` : ''}
       ${mascota.comentario ? `<p><strong>Comentario:</strong> ${mascota.comentario}</p>` : ''}
-      <button class="btn-eliminar" style="background:#e74c3c; margin-top: 10px;">Eliminar</button>
+      <button class="btn-eliminar">Eliminar</button>
     `;
 
-    card.querySelector('button.btn-eliminar').addEventListener('click', () => {
-      if (confirm(`¿Querés eliminar a ${mascota.nombre}?`)) {
-        eliminarMascota(index);
-      }
+    card.querySelector('.btn-eliminar').addEventListener('click', () => {
+      card.classList.add('fade-out');
+      setTimeout(() => eliminarMascota(index), 400);
     });
 
     listaAgregadas.appendChild(card);
@@ -81,41 +86,28 @@ document.getElementById('formAgregar').addEventListener('submit', function (e) {
   const imagen = document.getElementById('imagen').value.trim();
   const reqCuidados = salud === 'Requiere cuidados' ? cuidados.value.trim() : '';
 
-  // Validaciones
   if (!nombre || !raza || !tipo || !imagen) {
-    alert('Por favor completa todos los campos obligatorios.');
+    mostrarError('Por favor completa todos los campos obligatorios.');
     return;
   }
   if (isNaN(edad) || edad < 0 || edad > 20) {
-    alert('La edad debe ser un número entre 0 y 20.');
+    mostrarError('La edad debe ser entre 0 y 20.');
     return;
   }
   if (isNaN(peso) || peso < 0.5 || peso > 80) {
-    alert('El peso debe estar entre 0.5 kg y 80 kg.');
+    mostrarError('El peso debe estar entre 0.5 y 80 kg.');
     return;
   }
   if (salud === 'Requiere cuidados' && !reqCuidados) {
-    alert('Por favor especifica los cuidados requeridos.');
+    mostrarError('Por favor especifica los cuidados requeridos.');
     return;
   }
   if (!isValidURL(imagen)) {
-    alert('Por favor ingresa una URL válida para la imagen.');
+    mostrarError('Por favor ingresa una URL válida de imagen.');
     return;
   }
 
-  const mascota = {
-    nombre,
-    raza,
-    edad,
-    peso,
-    tipo,
-    sociable,
-    salud,
-    cuidados: reqCuidados,
-    comentario,
-    imagen,
-  };
-
+  const mascota = { nombre, raza, edad, peso, tipo, sociable, salud, cuidados: reqCuidados, comentario, imagen };
   const mascotas = JSON.parse(localStorage.getItem('mascotas')) || [];
   mascotas.push(mascota);
   localStorage.setItem('mascotas', JSON.stringify(mascotas));
@@ -123,18 +115,7 @@ document.getElementById('formAgregar').addEventListener('submit', function (e) {
   this.reset();
   otroTipo.style.display = 'none';
   cuidados.style.display = 'none';
-
   renderAgregadas();
 });
-
-// Función simple para validar URL (imagen)
-function isValidURL(string) {
-  try {
-    new URL(string);
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 renderAgregadas();

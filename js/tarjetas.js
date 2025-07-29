@@ -14,16 +14,38 @@ export function crearTarjeta(mascota, index) {
     <p><strong>Estado de salud:</strong> ${mascota.salud}</p>
     ${mascota.cuidados ? `<p><strong>Cuidados:</strong> ${mascota.cuidados}</p>` : ''}
     ${mascota.comentario ? `<p><strong>Comentario:</strong> ${mascota.comentario}</p>` : ''}
-    <button class="btn-eliminar">Eliminar</button>
+    <div class="acciones">
+      <button class="btn-eliminar">Eliminar</button>
+    </div>
   `;
-  div.querySelector('.btn-eliminar').addEventListener('click', () => {
-    if (confirm(`¿Querés eliminar a ${mascota.nombre}?`)) {
-      eliminarMascota(index);
-      renderAgregadas();
-    }
+
+  const acciones = div.querySelector('.acciones');
+  const btnEliminar = acciones.querySelector('.btn-eliminar');
+
+  btnEliminar.addEventListener('click', () => {
+    acciones.innerHTML = `
+      <span>¿Confirmar?</span>
+      <button class="btn-si">Sí</button>
+      <button class="btn-no">Cancelar</button>
+    `;
+
+    acciones.querySelector('.btn-si').addEventListener('click', () => {
+      div.classList.add('fade-out');
+      setTimeout(() => {
+        eliminarMascota(index);
+        renderAgregadas();
+      }, 400);
+    });
+
+    acciones.querySelector('.btn-no').addEventListener('click', () => {
+      acciones.innerHTML = `<button class="btn-eliminar">Eliminar</button>`;
+      acciones.querySelector('.btn-eliminar').addEventListener('click', () => btnEliminar.click());
+    });
   });
+
   return div;
 }
+
 
 export function renderAgregadas() {
   const mascotas = obtenerMascotas();
