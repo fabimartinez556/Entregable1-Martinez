@@ -1,5 +1,5 @@
-const contenedorCarrito = document.getElementById('carrito');
-let carrito = JSON.parse(localStorage.getItem('carritoAdopcion')) || [];
+const contenedorSolicitudes = document.getElementById('solicitudes');
+let solicitudes = JSON.parse(localStorage.getItem('solicitudesAdopcion')) || [];
 let adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
 
 // Contenedor para notificaciones (reutilizando el toast del CSS)
@@ -28,15 +28,15 @@ function mostrarNotificacion(mensaje, tipo = 'exito', duracion = 3000) {
   }, duracion);
 }
 
-function renderCarrito() {
-  contenedorCarrito.innerHTML = '';
+function renderSolicitudes() {
+  contenedorSolicitudes.innerHTML = '';
 
-  if (carrito.length === 0) {
-    contenedorCarrito.innerHTML = '<p>No hay mascotas en el carrito.</p>';
+  if (solicitudes.length === 0) {
+    contenedorSolicitudes.innerHTML = '<p>No hay mascotas en solicitudes.</p>';
     return;
   }
 
-  carrito.forEach((mascota, index) => {
+  solicitudes.forEach((mascota, index) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
@@ -46,41 +46,41 @@ function renderCarrito() {
       <p>Edad: ${mascota.edad} años</p>
       <button class="btn-eliminar" data-index="${index}">Eliminar</button>
     `;
-    contenedorCarrito.appendChild(card);
+    contenedorSolicitudes.appendChild(card);
   });
 
   // Botón Adoptar
   const btnAdoptar = document.createElement('button');
   btnAdoptar.textContent = 'Adoptar';
   btnAdoptar.className = 'btnAdoptar';
-  contenedorCarrito.appendChild(btnAdoptar);
+  contenedorSolicitudes.appendChild(btnAdoptar);
 
   // Eventos eliminar
-  contenedorCarrito.querySelectorAll('.btn-eliminar').forEach(btn => {
+  contenedorSolicitudes.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const idx = parseInt(e.target.getAttribute('data-index'));
-      eliminarDelCarrito(idx);
+      eliminarDeSolicitudes(idx);
     });
   });
 
   btnAdoptar.addEventListener('click', adoptar);
 }
 
-function eliminarDelCarrito(index) {
-  carrito.splice(index, 1);
-  localStorage.setItem('carritoAdopcion', JSON.stringify(carrito));
-  mostrarNotificacion('Mascota eliminada del carrito', 'error');
-  renderCarrito();
+function eliminarDeSolicitudes(index) {
+  solicitudes.splice(index, 1);
+  localStorage.setItem('solicitudesAdopcion', JSON.stringify(solicitudes));
+  mostrarNotificacion('Mascota eliminada de solicitudes', 'error');
+  renderSolicitudes();
 }
 
 function adoptar() {
-  if (carrito.length === 0) {
-    mostrarNotificacion('El carrito está vacío', 'error');
+  if (solicitudes.length === 0) {
+    mostrarNotificacion('No hay solicitudes', 'error');
     return;
   }
 
-  // Agregar las mascotas del carrito a adoptados sin repetir
-  carrito.forEach(mascota => {
+  // Agregar las mascotas desde solicitudes a adoptados sin repetir
+  solicitudes.forEach(mascota => {
     if (!adoptados.some(a => a.nombre === mascota.nombre && a.raza === mascota.raza)) {
       adoptados.push(mascota);
     }
@@ -88,12 +88,12 @@ function adoptar() {
 
   localStorage.setItem('adoptados', JSON.stringify(adoptados));
 
-  carrito = [];
-  localStorage.setItem('carritoAdopcion', JSON.stringify(carrito));
+  solicitudes = [];
+  localStorage.setItem('solicitudesAdopcion', JSON.stringify(solicitudes));
 
   mostrarNotificacion('¡Gracias por adoptar! 🎉', 'exito');
 
-  renderCarrito();
+  renderSolicitudes();
 }
 
-renderCarrito();
+renderSolicitudes();

@@ -1,6 +1,6 @@
 const lista = document.getElementById("listaMascotas");
 let mascotas = JSON.parse(localStorage.getItem("mascotas")) || [];
-let carrito = JSON.parse(localStorage.getItem("carritoAdopcion")) || [];
+let solicitudes = JSON.parse(localStorage.getItem("solicitudesAdopcion")) || [];
 let adoptados = JSON.parse(localStorage.getItem("adoptados")) || [];
 
 // notificacion
@@ -22,7 +22,7 @@ function renderMascotas() {
     const estaAdoptada = adoptados.some(
       (a) => a.nombre === mascota.nombre && a.raza === mascota.raza
     );
-    const enCarrito = carrito.some(
+    const enSolicitudes = solicitudes.some(
       (c) => c.nombre === mascota.nombre && c.raza === mascota.raza
     );
     const card = document.createElement("div");
@@ -47,15 +47,15 @@ function renderMascotas() {
       }
       <button
         ${estaAdoptada ? "disabled style='background:#95a5a6; cursor:not-allowed;'" : ""}
-        ${enCarrito ? "disabled style='background:#3182ce; cursor:not-allowed;'" : ""}
-        onclick="agregarAlCarrito(${index})"
+        ${enSolicitudes ? "disabled style='background:#3182ce; cursor:not-allowed;'" : ""}
+        onclick="agregarASolicitudes(${index})"
       >
         ${
           estaAdoptada
             ? "Adoptado"
-            : enCarrito
-            ? "En carrito"
-            : "Agregar al carrito"
+            : enSolicitudes
+            ? "En solicitudes"
+            : "Agregar a solicitudes"
         }
       </button>
     `;
@@ -63,7 +63,7 @@ function renderMascotas() {
   });
 }
 
-function agregarAlCarrito(index) {
+function agregarASolicitudes(index) {
   const mascota = mascotas[index];
 
   if (adoptados.some((a) => a.nombre === mascota.nombre && a.raza === mascota.raza)) {
@@ -71,14 +71,14 @@ function agregarAlCarrito(index) {
     return;
   }
 
-  if (carrito.some((c) => c.nombre === mascota.nombre && c.raza === mascota.raza)) {
-    mostrarNotificacion("La mascota ya está en el carrito.", "error");
+  if (solicitudes.some((c) => c.nombre === mascota.nombre && c.raza === mascota.raza)) {
+    mostrarNotificacion("La mascota ya está en solicitudes.", "error");
     return;
   }
 
-  carrito.push(mascota);
-  localStorage.setItem("carritoAdopcion", JSON.stringify(carrito));
-  mostrarNotificacion(`Agregaste a ${mascota.nombre} al carrito.`, "exito");
+  solicitudes.push(mascota);
+  localStorage.setItem("solicitudesAdopcion", JSON.stringify(solicitudes));
+  mostrarNotificacion(`Agregaste a ${mascota.nombre} a solicitudes.`, "exito");
   renderMascotas();
 }
 

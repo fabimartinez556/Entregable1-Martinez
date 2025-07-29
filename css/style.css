@@ -177,7 +177,7 @@ button {
 
 /* === Botón Adoptar === */
 .btnAdoptar {
-  background-color: #38a169; /* verde éxito */
+  background-color: #38a169;
   color: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -188,7 +188,7 @@ button {
 
 /* === Botón Eliminar === */
 .btn-eliminar {
-  background-color: #e53e3e; /* rojo fuerte */
+  background-color: #e53e3e;
   color: white;
 }
 .btn-eliminar:hover {
@@ -202,9 +202,9 @@ button {
 }
 
 
-/* === Botón Agregar al carrito === */
+/* === Botón Agregar a solicitudes === */
 .btn-agregar {
-  background-color: #3182ce; /* azul medio */
+  background-color: #3182ce;
   color: white;
 }
 .btn-agregar:hover {
