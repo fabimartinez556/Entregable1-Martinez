@@ -33,6 +33,7 @@ function manejarSubmit(e) {
     salud: elementos.salud.value,
     comentario: elementos.comentario.value.trim(),
     imagen: elementos.imagen.value.trim(),
+    adoptada: false,
     cuidados: elementos.salud.value === 'Requiere cuidados' ? elementos.cuidados.value.trim() : ''
   };
 

@@ -13,3 +13,17 @@ export function eliminarMascota(index) {
   mascotas.splice(index, 1);
   localStorage.setItem('mascotas', JSON.stringify(mascotas));
 }
+
+export function actualizarMascota(index, mascotaActualizada) {
+  const mascotas = obtenerMascotas();
+  mascotas[index] = mascotaActualizada;
+  localStorage.setItem('mascotas', JSON.stringify(mascotas));
+}
+
+export function obtenerAdoptados() {
+  return JSON.parse(localStorage.getItem("adoptados")) || [];
+}
+
+export function guardarAdoptados(adoptados) {
+  localStorage.setItem("adoptados", JSON.stringify(adoptados));
+}

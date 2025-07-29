@@ -29,6 +29,10 @@ function mostrarNotificacion(mensaje, tipo = 'exito', duracion = 3000) {
 }
 
 function renderSolicitudes() {
+  // Siempre sincronizamos la variable con localStorage
+  solicitudes = JSON.parse(localStorage.getItem('solicitudesAdopcion')) || [];
+  adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
+
   contenedorSolicitudes.innerHTML = '';
 
   if (solicitudes.length === 0) {
@@ -79,14 +83,23 @@ function adoptar() {
     return;
   }
 
-  // Agregar las mascotas desde solicitudes a adoptados sin repetir
-  solicitudes.forEach(mascota => {
-    if (!adoptados.some(a => a.nombre === mascota.nombre && a.raza === mascota.raza)) {
-      adoptados.push(mascota);
+  let mascotas = JSON.parse(localStorage.getItem('mascotas')) || [];
+  adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
+
+  solicitudes.forEach(solicitada => {
+    // Agregar a adoptados si no está repetida
+    if (!adoptados.some(a => a.nombre === solicitada.nombre && a.raza === solicitada.raza)) {
+      adoptados.push(solicitada);
+    }
+    // Marcar en mascotas que está adoptada
+    const idx = mascotas.findIndex(m => m.nombre === solicitada.nombre && m.raza === solicitada.raza);
+    if (idx !== -1) {
+      mascotas[idx].adoptada = true;
     }
   });
 
   localStorage.setItem('adoptados', JSON.stringify(adoptados));
+  localStorage.setItem('mascotas', JSON.stringify(mascotas));
 
   solicitudes = [];
   localStorage.setItem('solicitudesAdopcion', JSON.stringify(solicitudes));
@@ -96,4 +109,5 @@ function adoptar() {
   renderSolicitudes();
 }
 
+// Inicializar la primera renderización
 renderSolicitudes();
