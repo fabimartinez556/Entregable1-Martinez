@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simulador de Adopción de Mascotas</title>
-    <link rel="stylesheet" href="./css/style.css" />
-  </head>
-  <body>
-    <main>
-    <h1>Simulador de Adopción de Mascotas</h1>
-    
-    <p id="descripcion" role="note">
-      Este simulador te ayudará a encontrar una mascota ideal para adoptar,
-      según tus preferencias. Toda la interacción se realiza a través de la
-      consola y cuadros de diálogo.
-    </p>
-    
-    <p id="abrirConsola">
-      Por favor, abrí la consola del navegador (F12 o Ctrl+Shift+I) para ver las
-      mascotas disponibles.
-    </p>
-    
-    <button id="botonIniciar" class="botonSimulador" onclick="iniciarSimulador()">Cargar o Adoptar</button>
-    <button class="botonSimulador" onclick="listarMascotasDetallado()">Ver todas las mascotas</button>
-    <button class="botonSimulador" onclick="buscarPorNombre()">🔎 Buscar por nombre</button>
-    <button class="botonSimulador" onclick="filtrarMascotasAvanzado()">🔍 Búsqueda avanzada</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Adopción de Mascotas</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav>
+    <h1>🐶 Adopción de Mascotas</h1>
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="agregar.html">Agregar Mascota</a></li>
+      <li><a href="disponibles.html">Disponibles</a></li>
+      <li><a href="carrito.html">Carrito</a></li>
+    </ul>
+  </nav>
 
-    </main>
-    
-    <script src="js/adopcion.js"></script>
-  </body>
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="contenedor">
+    <div class="container text-center">
+      <h2>Bienvenido al simulador de adopción</h2>
+      <p>Usá el menú para navegar entre secciones.</p>
+      <img src="./img/Principal.png" alt="adopción" class="img-principal" style="max-width: 200px; margin-top: 20px;">
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Adopción de Mascotas. Todos los derechos reservados.</p>
+  </footer>
+</body>
 </html>
