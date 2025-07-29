@@ -24,6 +24,7 @@ function manejarSubmit(e) {
   if (tipo === 'Otro') tipo = elementos.otroTipo.value.trim();
 
   const mascota = {
+    id: Date.now(),
     nombre: elementos.nombre.value.trim(),
     raza: elementos.raza.value.trim(),
     edad: parseInt(elementos.edad.value),

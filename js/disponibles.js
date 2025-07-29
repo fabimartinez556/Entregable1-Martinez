@@ -66,15 +66,16 @@ function renderMascotas() {
 function agregarASolicitudes(index) {
   const mascota = mascotas[index];
 
-  if (adoptados.some((a) => a.nombre === mascota.nombre && a.raza === mascota.raza)) {
-    mostrarNotificacion("Esta mascota ya fue adoptada.", "error");
-    return;
-  }
+if (adoptados.some(a => a.id === mascota.id)) {
+  mostrarNotificacion("Esta mascota ya fue adoptada.", "error");
+  return;
+}
 
-  if (solicitudes.some((c) => c.nombre === mascota.nombre && c.raza === mascota.raza)) {
-    mostrarNotificacion("La mascota ya está en solicitudes.", "error");
-    return;
-  }
+if (solicitudes.some(c => c.id === mascota.id)) {
+  mostrarNotificacion("La mascota ya está en solicitudes.", "error");
+  return;
+}
+
 
   solicitudes.push(mascota);
   localStorage.setItem("solicitudesAdopcion", JSON.stringify(solicitudes));

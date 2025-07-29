@@ -29,7 +29,7 @@ function mostrarNotificacion(mensaje, tipo = 'exito', duracion = 3000) {
 }
 
 function renderSolicitudes() {
-  // Siempre sincronizamos la variable con localStorage
+  
   solicitudes = JSON.parse(localStorage.getItem('solicitudesAdopcion')) || [];
   adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
 
@@ -78,13 +78,15 @@ function eliminarDeSolicitudes(index) {
 }
 
 function adoptar() {
-  if (solicitudes.length === 0) {
-    mostrarNotificacion('No hay solicitudes', 'error');
-    return;
-  }
+if (!adoptados.some(a => a.id === solicitada.id)) {
+  adoptados.push(solicitada);
+}
 
-  let mascotas = JSON.parse(localStorage.getItem('mascotas')) || [];
-  adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
+const idx = mascotas.findIndex(m => m.id === solicitada.id);
+if (idx !== -1) {
+  mascotas[idx].adoptada = true;
+}
+
 
   solicitudes.forEach(solicitada => {
     // Agregar a adoptados si no está repetida
