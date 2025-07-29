@@ -3,7 +3,6 @@ let carrito = JSON.parse(localStorage.getItem('carritoAdopcion')) || [];
 let adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
 
 // Contenedor para notificaciones (reutilizando el toast del CSS)
-// Como no tenés un toast en este HTML, lo creamos dinámicamente
 let contenedorNotificaciones = document.getElementById('notificaciones');
 if (!contenedorNotificaciones) {
   contenedorNotificaciones = document.createElement('div');
@@ -50,7 +49,7 @@ function renderCarrito() {
     contenedorCarrito.appendChild(card);
   });
 
-  // Botón Adoptar al final
+  // Botón Adoptar
   const btnAdoptar = document.createElement('button');
   btnAdoptar.textContent = 'Adoptar';
   btnAdoptar.className = 'btnAdoptar';

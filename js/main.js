@@ -50,9 +50,9 @@ function manejarSubmit(e) {
   mostrarToast("¡Mascota agregada correctamente!", "exito");
 }
 
-// ======================
+
 // Toast reutilizable
-// ======================
+
 function mostrarToast(mensaje, tipo = 'exito') {
   const toast = document.getElementById('toast');
   toast.textContent = mensaje;

@@ -3,7 +3,7 @@ let mascotas = JSON.parse(localStorage.getItem("mascotas")) || [];
 let carrito = JSON.parse(localStorage.getItem("carritoAdopcion")) || [];
 let adoptados = JSON.parse(localStorage.getItem("adoptados")) || [];
 
-// Usamos el div #toast que ya tenés en el HTML para mostrar notificaciones
+// notificacion
 const contenedorNotificaciones = document.getElementById('toast');
 
 function mostrarNotificacion(mensaje, tipo = 'exito', duracion = 3000) {
