@@ -1,4 +1,5 @@
 const contenedorSolicitudes = document.getElementById('solicitudes');
+let mascotas = JSON.parse(localStorage.getItem('mascotas')) || [];
 let solicitudes = JSON.parse(localStorage.getItem('solicitudesAdopcion')) || [];
 let adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
 
@@ -29,7 +30,6 @@ function mostrarNotificacion(mensaje, tipo = 'exito', duracion = 3000) {
 }
 
 function renderSolicitudes() {
-  
   solicitudes = JSON.parse(localStorage.getItem('solicitudesAdopcion')) || [];
   adoptados = JSON.parse(localStorage.getItem('adoptados')) || [];
 
@@ -53,13 +53,13 @@ function renderSolicitudes() {
     contenedorSolicitudes.appendChild(card);
   });
 
-  // Botón Adoptar
+  // Botón Adoptar que adopta todas las solicitudes
   const btnAdoptar = document.createElement('button');
   btnAdoptar.textContent = 'Adoptar';
   btnAdoptar.className = 'btnAdoptar';
   contenedorSolicitudes.appendChild(btnAdoptar);
 
-  // Eventos eliminar
+  // Eventos eliminar solicitud
   contenedorSolicitudes.querySelectorAll('.btn-eliminar').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const idx = parseInt(e.target.getAttribute('data-index'));
@@ -78,22 +78,10 @@ function eliminarDeSolicitudes(index) {
 }
 
 function adoptar() {
-if (!adoptados.some(a => a.id === solicitada.id)) {
-  adoptados.push(solicitada);
-}
-
-const idx = mascotas.findIndex(m => m.id === solicitada.id);
-if (idx !== -1) {
-  mascotas[idx].adoptada = true;
-}
-
-
   solicitudes.forEach(solicitada => {
-    // Agregar a adoptados si no está repetida
     if (!adoptados.some(a => a.nombre === solicitada.nombre && a.raza === solicitada.raza)) {
       adoptados.push(solicitada);
     }
-    // Marcar en mascotas que está adoptada
     const idx = mascotas.findIndex(m => m.nombre === solicitada.nombre && m.raza === solicitada.raza);
     if (idx !== -1) {
       mascotas[idx].adoptada = true;
