@@ -4,15 +4,15 @@ let solicitudes = JSON.parse(localStorage.getItem("solicitudesAdopcion")) || [];
 let adoptados = JSON.parse(localStorage.getItem("adoptados")) || [];
 
 // notificacion
-const contenedorNotificaciones = document.getElementById('toast');
+const contenedorNotificaciones = document.getElementById("toast");
 
-function mostrarNotificacion(mensaje, tipo = 'exito', duracion = 3000) {
+function mostrarNotificacion(mensaje, tipo = "exito", duracion = 3000) {
   contenedorNotificaciones.textContent = mensaje;
   contenedorNotificaciones.className = `toast-mensaje ${tipo}`;
-  contenedorNotificaciones.classList.remove('oculto');
+  contenedorNotificaciones.classList.remove("oculto");
 
   setTimeout(() => {
-    contenedorNotificaciones.classList.add('oculto');
+    contenedorNotificaciones.classList.add("oculto");
   }, duracion);
 }
 
@@ -45,19 +45,26 @@ function renderMascotas() {
           ? `<p><strong>Comentario:</strong> ${mascota.comentario}</p>`
           : ""
       }
-      <button
-        ${estaAdoptada ? "disabled style='background:#95a5a6; cursor:not-allowed;'" : ""}
-        ${enSolicitudes ? "disabled style='background:#3182ce; cursor:not-allowed;'" : ""}
-        onclick="agregarASolicitudes(${index})"
-      >
-        ${
-          estaAdoptada
-            ? "Adoptado"
-            : enSolicitudes
-            ? "En solicitudes"
-            : "Agregar a solicitudes"
-        }
-      </button>
+<div class="acciones">
+  <button class="${
+    estaAdoptada
+      ? "btn-adoptado"
+      : enSolicitudes
+      ? "btn-en-solicitudes"
+      : "btn-agregar"
+  }"
+  ${estaAdoptada || enSolicitudes ? "disabled" : ""}
+  onclick="agregarASolicitudes(${index})">
+    ${
+      estaAdoptada
+        ? "Adoptado"
+        : enSolicitudes
+        ? "En solicitudes"
+        : "Agregar a solicitudes"
+    }
+  </button>
+</div>
+
     `;
     lista.appendChild(card);
   });
@@ -66,16 +73,15 @@ function renderMascotas() {
 function agregarASolicitudes(index) {
   const mascota = mascotas[index];
 
-if (adoptados.some(a => a.id === mascota.id)) {
-  mostrarNotificacion("Esta mascota ya fue adoptada.", "error");
-  return;
-}
+  if (adoptados.some((a) => a.id === mascota.id)) {
+    mostrarNotificacion("Esta mascota ya fue adoptada.", "error");
+    return;
+  }
 
-if (solicitudes.some(c => c.id === mascota.id)) {
-  mostrarNotificacion("La mascota ya está en solicitudes.", "error");
-  return;
-}
-
+  if (solicitudes.some((c) => c.id === mascota.id)) {
+    mostrarNotificacion("La mascota ya está en solicitudes.", "error");
+    return;
+  }
 
   solicitudes.push(mascota);
   localStorage.setItem("solicitudesAdopcion", JSON.stringify(solicitudes));

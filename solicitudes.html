@@ -8,7 +8,7 @@
 </head>
 <body>
   <nav>
-    <h1>🐶 Adopción de Mascotas</h1>
+    <h1 class="logo">🐶 Adopción de Mascotas</h1>
     <ul>
       <li><a href="index.html">Inicio</a></li>
       <li><a href="agregar.html">Agregar Mascota</a></li>
@@ -21,6 +21,16 @@
     <h2>Solicitudes de Adopción</h2>
     <div id="solicitudes" class="grid"></div>
   </main>
+    <div id="modalConfirmacion" class="modal-overlay oculto">
+    <div class="modal-contenido">
+      <h2>¿Confirmás la adopción?</h2>
+      <p>Estás por adoptar a las mascotas seleccionadas. ¿Deseás continuar?</p>
+      <div class="modal-botones">
+        <button id="confirmarAdopcion" class="btn-confirmar">Sí, adoptar</button>
+        <button id="cancelarAdopcion" class="btn-cancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
   <footer>
     <p>&copy; 2025 Adopción de Mascotas. Todos los derechos reservados.</p>
   </footer>
