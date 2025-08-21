@@ -1,0 +1,26 @@
+[
+  {
+    "id": 100,
+    "nombre": "Nina",
+    "raza": "Beagle",
+    "edad": 4,
+    "peso": 11.5,
+    "imagen": "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=800&auto=format&fit=crop",
+    "sociable": "Sí",
+    "cuidados": "",
+    "observaciones": "Le encanta jugar",
+    "estado": "Disponible"
+  },
+  {
+    "id": 101,
+    "nombre": "Rocky",
+    "raza": "Pastor Alemán",
+    "edad": 5,
+    "peso": 30,
+    "imagen": "https://images.unsplash.com/photo-1568572933382-74d440642117?q=80&w=800&auto=format&fit=crop",
+    "sociable": "No",
+    "cuidados": "Entrenamiento diario",
+    "observaciones": "",
+    "estado": "Disponible"
+  }
+]

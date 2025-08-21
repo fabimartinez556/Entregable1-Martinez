@@ -1,29 +1,9 @@
-export function obtenerMascotas() {
-  return JSON.parse(localStorage.getItem('mascotas')) || [];
+// storage.js
+export function guardarEnStorage(clave, valor) {
+  localStorage.setItem(clave, JSON.stringify(valor));
 }
-
-export function guardarMascota(mascota) {
-  const mascotas = obtenerMascotas();
-  mascotas.push(mascota);
-  localStorage.setItem('mascotas', JSON.stringify(mascotas));
-}
-
-export function eliminarMascota(index) {
-  const mascotas = obtenerMascotas();
-  mascotas.splice(index, 1);
-  localStorage.setItem('mascotas', JSON.stringify(mascotas));
-}
-
-export function actualizarMascota(index, mascotaActualizada) {
-  const mascotas = obtenerMascotas();
-  mascotas[index] = mascotaActualizada;
-  localStorage.setItem('mascotas', JSON.stringify(mascotas));
-}
-
-export function obtenerAdoptados() {
-  return JSON.parse(localStorage.getItem("adoptados")) || [];
-}
-
-export function guardarAdoptados(adoptados) {
-  localStorage.setItem("adoptados", JSON.stringify(adoptados));
+export function leerStorage(clave, porDefecto = null) {
+  const txt = localStorage.getItem(clave);
+  if (!txt) return porDefecto;
+  try { return JSON.parse(txt); } catch { return porDefecto; }
 }

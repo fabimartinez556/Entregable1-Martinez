@@ -2,31 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Adopción de Mascotas</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <nav>
-    <h1>🐶 Adopción de Mascotas</h1>
+    <h1 class="logo">🐶 Adopción de Mascotas</h1>
     <ul>
-      <li><a href="./index.html">Inicio</a></li>
-      <li><a href="./agregar.html">Agregar Mascota</a></li>
-      <li><a href="./disponibles.html">Disponibles</a></li>
-      <li><a href="./solicitudes.html">Solicitudes</a></li>
+      <li><a href="index.html" class="active">Inicio</a></li>
+      <li><a href="agregar.html">Agregar Mascota</a></li>
+      <li><a href="disponibles.html">Disponibles</a></li>
+      <li><a href="solicitudes.html">Solicitudes</a></li>
     </ul>
   </nav>
 
-  <!-- CONTENIDO PRINCIPAL -->
   <main class="contenedor">
-    <div class="container text-center">
-      <h2>Bienvenido al simulador de adopción</h2>
-      <p>Usá el menú para navegar entre secciones.</p>
-      <img src="./img/Principal.png" alt="adopción" class="img-principal" style="max-width: 200px; margin-top: 20px;">
-    </div>
+    <section class="hero">
+      <h2>¡Encontrá tu nuevo mejor amigo!</h2>
+      <p>Gestioná mascotas disponibles, registrá adopciones con datos completos del adoptante y mantené todo en orden.</p>
+      <div class="cta">
+        <a class="btn" href="disponibles.html">Ver Disponibles</a>
+        <a class="btn btn-sec" href="agregar.html">Agregar Mascota</a>
+      </div>
+    </section>
   </main>
 
-  <!-- FOOTER -->
   <footer>
     <p>&copy; 2025 Adopción de Mascotas. Todos los derechos reservados.</p>
   </footer>

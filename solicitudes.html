@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Solicitudes de Adopción</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <nav>
@@ -13,27 +13,21 @@
       <li><a href="index.html">Inicio</a></li>
       <li><a href="agregar.html">Agregar Mascota</a></li>
       <li><a href="disponibles.html">Disponibles</a></li>
-      <li><a href="solicitudes.html">Solicitudes</a></li>
+      <li><a href="solicitudes.html" class="active">Solicitudes</a></li>
     </ul>
   </nav>
 
   <main class="contenedor">
-    <h2>Solicitudes de Adopción</h2>
-    <div id="solicitudes" class="grid"></div>
+    <h2>Solicitudes</h2>
+    <div id="listaSolicitudes" class="grid"></div>
   </main>
-    <div id="modalConfirmacion" class="modal-overlay oculto">
-    <div class="modal-contenido">
-      <h2>¿Confirmás la adopción?</h2>
-      <p>Estás por adoptar a las mascotas seleccionadas. ¿Deseás continuar?</p>
-      <div class="modal-botones">
-        <button id="confirmarAdopcion" class="btn-confirmar">Sí, adoptar</button>
-        <button id="cancelarAdopcion" class="btn-cancelar">Cancelar</button>
-      </div>
-    </div>
-  </div>
+
   <footer>
-    <p>&copy; 2025 Adopción de Mascotas. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Adopción de Mascotas.</p>
   </footer>
-  <script src="js/solicitudes.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

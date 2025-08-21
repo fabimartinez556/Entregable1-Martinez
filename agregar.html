@@ -11,7 +11,7 @@
     <h1 class="logo">🐶 Adopción de Mascotas</h1>
     <ul>
       <li><a href="index.html">Inicio</a></li>
-      <li><a href="agregar.html">Agregar Mascota</a></li>
+      <li><a href="agregar.html" class="active">Agregar Mascota</a></li>
       <li><a href="disponibles.html">Disponibles</a></li>
       <li><a href="solicitudes.html">Solicitudes</a></li>
     </ul>
@@ -20,22 +20,13 @@
   <main class="contenedor">
     <h2>Agregar Mascota</h2>
 
-    <div id="mensajeError" class="mensaje-error" style="display:none;"></div>
-
     <form id="formAgregar" class="formulario">
       <input type="text" id="nombre" placeholder="Nombre" required />
       <input type="text" id="raza" placeholder="Raza" required />
       <input type="number" id="edad" placeholder="Edad (máx 20)" min="0" max="20" required />
       <input type="number" step="0.1" id="peso" placeholder="Peso (kg)" min="0.5" max="80" required />
 
-      <select id="tipo" required>
-        <option value="">Tipo de mascota</option>
-        <option value="Perro">Perro</option>
-        <option value="Gato">Gato</option>
-        <option value="Otro">Otro (especificar abajo)</option>
-      </select>
-
-      <input type="text" id="otroTipo" placeholder="Si es otro, ¿cuál?" style="display:none;" />
+      <textarea id="observaciones" placeholder="Observaciones adicionales"></textarea>
 
       <label for="sociable">¿Es sociable con otras mascotas?</label>
       <select id="sociable" required>
@@ -43,28 +34,28 @@
         <option value="No">No</option>
       </select>
 
-      <label for="salud">Estado de salud</label>
-      <select id="salud" required>
-        <option value="Sano">Sano</option>
-        <option value="Requiere cuidados">Requiere cuidados</option>
-      </select>
+      <textarea id="cuidados" placeholder="Cuidados especiales (dieta, medicación, otros)"></textarea>
 
-      <input type="text" id="cuidados" placeholder="Especificar cuidados" style="display:none;" />
-
-      <textarea id="comentario" placeholder="Comentario adicional (opcional)" rows="3"></textarea>
       <input type="url" id="imagen" placeholder="URL de imagen" required />
 
-      <button type="submit" class="btnAdoptar">Agregar Mascota</button>
+      <div id="previewContainer" style="margin-top:10px; display:none;">
+        <p>Vista previa:</p>
+        <img id="previewImagen" src="" alt="Vista previa" class="img-card" style="max-width:200px;">
+      </div>
+
+      <button type="submit" class="btn-agregar btn">Agregar Mascota</button>
     </form>
 
-    <h3>Mascotas Agregadas</h3>
+    <h3>Mascotas agregadas (local)</h3>
     <div id="listaAgregadas" class="grid"></div>
   </main>
 
   <footer>
-    <p>&copy; 2025 Adopción de Mascotas. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Adopción de Mascotas.</p>
   </footer>
 
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
