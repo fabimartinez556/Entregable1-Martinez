@@ -373,9 +373,15 @@ function actualizarContadorAdoptadas() {
   const solicitudes = leerStorage("solicitudes", []) || [];
   const adoptadas = solicitudes.filter((s) => s.estado === "Adoptada").length;
 
+  // Si no hay adoptadas, mostrar 0 y salir
+  if (adoptadas === 0) {
+    numSpan.textContent = "0";
+    return;
+  }
+
   let current = 0;
   const duracionTotal = 3000; // 3 segundos
-  const intervalTime = duracionTotal / (adoptadas || 1);
+  const intervalTime = duracionTotal / adoptadas;
 
   const contador = setInterval(() => {
     current++;
@@ -388,15 +394,13 @@ function actualizarContadorAdoptadas() {
 
     if (current >= adoptadas) {
       clearInterval(contador);
-      // Efecto final destacado
       numSpan.classList.add("destacado");
       setTimeout(() => numSpan.classList.remove("destacado"), 2500);
-
-      // Opcional: confeti
       lanzarConfeti();
     }
   }, intervalTime);
 }
+
 
 // Función simple de confeti
 function lanzarConfeti() {
