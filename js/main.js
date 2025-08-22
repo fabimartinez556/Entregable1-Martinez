@@ -1,271 +1,397 @@
-// main.js
 import { fetchDisponibles } from "./api.js";
-import { renderTarjetas } from "./ui.js";
-import { simularAdopcion, reactivarMascota } from "./workflow.js";
+import { simularAdopcion } from "./workflow.js";
 import { mostrarToast } from "./notifications.js";
 import { leerStorage, guardarEnStorage } from "./storage.js";
+import { renderTarjetas } from "./ui.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname;
+let cacheDisponibles = [];
 
-  // ======= DISPONIBLES =======
-  if (path.includes("disponibles.html")) {
-    const contenedor = document.getElementById("listaDisponibles");
+// ========================== DISPONIBLES ==========================
+export async function cargarDisponibles() {
+  const contenedor = document.getElementById("listaDisponibles");
+  if (!contenedor) return;
 
-    async function cargarDisponibles() {
-      let disponibles = await fetchDisponibles();
-      const extras = leerStorage("disponiblesExtra", []) || [];
-      const solicitudes = leerStorage("solicitudes", []) || [];
+  let disponibles = await fetchDisponibles();
+  const extras = leerStorage("disponiblesExtra", []) || [];
+  const solicitudes = leerStorage("solicitudes", []) || [];
 
-      // fusionar remotos + extras
-      let todos = [...disponibles, ...extras];
-
-      // ocultar los que ya están adoptados (por id)
-      const idsAdoptados = new Set(solicitudes.map((s) => s.id));
-      todos = todos.filter((m) => !idsAdoptados.has(m.id));
-
-      renderTarjetas(todos, "listaDisponibles");
-      return todos;
+  // Combinar y normalizar
+  const todos = [...disponibles, ...extras].map((m) => {
+    const solicitud = solicitudes.find((s) => s.id === m.id);
+    if (solicitud) {
+      m.estado = solicitud.estado === "Pendiente" ? "Pendiente" : "Adoptada";
+    } else if (!m.estado) {
+      m.estado = "Disponible";
     }
+    return m;
+  });
 
-    let cache = [];
-    cargarDisponibles().then((data) => (cache = data));
+  // Evitar duplicados
+  const map = new Map();
+  todos.forEach((m) => map.set(m.id, m));
+  cacheDisponibles = Array.from(map.values());
 
-    contenedor.addEventListener("click", async (e) => {
-      const btn = e.target;
-      if (btn.classList.contains("btn-adoptar")) {
-        const id = Number(btn.dataset.id);
-        const seleccionado = cache.find((d) => d.id === id);
-        if (!seleccionado) return;
+  // Renderizar tarjetas
+  contenedor.innerHTML = "";
+  cacheDisponibles.forEach((item) => {
+    const card = crearCardDisponible(item);
+    contenedor.appendChild(card);
+  });
 
-        // Confirmación antes del formulario
-        const conf = await Swal.fire({
-          title: "Confirmar adopción",
-          text: `¿Querés iniciar adopción de ${seleccionado.nombre}?`,
-          showCancelButton: true,
-          confirmButtonText: "Sí",
-          cancelButtonText: "Cancelar",
-        });
-        if (!conf.isConfirmed) return;
+  contenedor.addEventListener("click", manejarClickDisponible);
+}
 
-        const ok = await simularAdopcion(seleccionado);
-        if (ok) {
-          cache = await cargarDisponibles(); // refresca la lista
-        }
-      }
+function crearCardDisponible(item) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.id = item.id;
 
-      if (btn.classList.contains("btn-eliminar")) {
-        const id = Number(btn.dataset.id);
-        // Si la mascota estaba en extras, la removemos del storage
-        let extras = leerStorage("disponiblesExtra", []) || [];
-        const antes = extras.length;
-        extras = extras.filter((m) => m.id !== id);
-        guardarEnStorage("disponiblesExtra", extras);
+  let botonAdoptar = "";
+  if (item.estado === "Disponible")
+    botonAdoptar = `<button class="btn-adoptar" data-id="${item.id}">Adoptar</button>`;
+  else
+    botonAdoptar = `<button class="btn-adoptar" disabled>${item.estado}</button>`;
 
-        btn.closest(".card").remove();
-        mostrarToast(
-          antes !== extras.length
-            ? "Mascota eliminada (local)"
-            : "Mascota eliminada",
-          "info"
-        );
+  const botonEliminar =
+    item.id > 100000 && item.estado === "Disponible"
+      ? `<button class="btn-eliminar" data-id="${item.id}">Eliminar</button>`
+      : "";
+
+  card.innerHTML = `
+    <img src="${item.imagen}" alt="${item.nombre}" class="img-card" data-full="${item.imagen}">
+    <h3>${item.nombre}</h3>
+    <p>Raza: ${item.raza}</p>
+    <p>Edad: ${item.edad} años</p>
+    ${item.peso ? `<p>Peso: ${item.peso} kg</p>` : ""}
+    ${item.observaciones ? `<p><em>${item.observaciones}</em></p>` : ""}
+    ${item.sociable ? `<p>🐾 Sociable: ${item.sociable}</p>` : ""}
+    ${item.cuidados ? `<p>⚕️ Cuidados: ${item.cuidados}</p>` : ""}
+    <p class="${item.estado === "Adoptada" ? "estado-adoptada" : ""}">Estado: ${item.estado}</p>
+    <div class="acciones">
+      ${botonAdoptar}
+      ${botonEliminar}
+    </div>
+  `;
+
+  // Ampliar imagen
+  const img = card.querySelector(".img-card");
+  img.addEventListener("click", () => {
+    Swal.fire({
+      imageUrl: img.dataset.full,
+      showConfirmButton: false,
+      showCloseButton: true,
+      width: 600,
+    });
+  });
+
+  return card;
+}
+
+async function manejarClickDisponible(e) {
+  const btn = e.target;
+  const id = Number(btn.dataset.id);
+  if (!id) return;
+
+  const contenedor = document.getElementById("listaDisponibles");
+  const mascotaIndex = cacheDisponibles.findIndex((m) => m.id === id);
+  if (mascotaIndex === -1) return;
+  const mascota = cacheDisponibles[mascotaIndex];
+
+  if (btn.classList.contains("btn-adoptar") && mascota.estado === "Disponible") {
+    actualizarEstadoDisponible(mascota.id, "Pendiente confirmacion");
+
+    simularAdopcion(mascota).then((ok) => {
+      if (!ok) {
+        actualizarEstadoDisponible(mascota.id, "Disponible");
+        mostrarToast("No se pudo completar la adopción", "error");
+      } else {
+        actualizarContadorAdoptadas();
       }
     });
   }
 
-  // ======= AGREGAR =======
-  if (path.includes("agregar.html")) {
-    const form = document.getElementById("formAgregar");
-    const inputImagen = document.getElementById("imagen");
-    const previewContainer = document.getElementById("previewContainer");
-    const previewImagen = document.getElementById("previewImagen");
-    const listaAgregadas = document.getElementById("listaAgregadas");
+  if (btn.classList.contains("btn-eliminar")) {
+    let extras = leerStorage("disponiblesExtra", []) || [];
+    extras = extras.filter((m) => m.id !== id);
+    guardarEnStorage("disponiblesExtra", extras);
+    mostrarToast("Mascota eliminada (local)", "info");
 
-    function renderAgregadas() {
-      const extras = leerStorage("disponiblesExtra", []) || [];
-      if (!listaAgregadas) return;
-      listaAgregadas.innerHTML = "";
-      extras.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <img src="${item.imagen}" alt="${
-          item.nombre
-        }" class="img-card" data-full="${item.imagen}">
-          <h3>${item.nombre}</h3>
-          <p>Raza: ${item.raza}</p>
-          <p>Edad: ${item.edad} años</p>
-          <p>Peso: ${item.peso} kg</p>
-          ${item.observaciones ? `<p><em>${item.observaciones}</em></p>` : ""}
-          ${item.sociable ? `<p>🐾 Sociable: ${item.sociable}</p>` : ""}
-          ${item.cuidados ? `<p>⚕️ Cuidados: ${item.cuidados}</p>` : ""}
-          <div class="acciones">
-            <button class="btn-eliminar" data-id="${item.id}">Eliminar</button>
-          </div>
-        `;
-        listaAgregadas.appendChild(card);
-      });
+    const card = contenedor.querySelector(`.card[data-id="${id}"]`);
+    if (card) card.remove();
+  }
+}
 
-      // ampliar imagen
-      listaAgregadas.querySelectorAll(".img-card").forEach((img) => {
-        img.addEventListener("click", () => {
-          Swal.fire({
-            imageUrl: img.dataset.full,
-            showConfirmButton: false,
-            showCloseButton: true,
-            width: "600px",
-          });
-        });
-      });
-    }
+// ========================== AGREGAR ==========================
+export function initAgregar() {
+  const form = document.getElementById("formAgregar");
+  const inputImagen = document.getElementById("imagen");
+  const previewContainer = document.getElementById("previewContainer");
+  const previewImagen = document.getElementById("previewImagen");
+  const listaAgregadas = document.getElementById("listaAgregadas");
+  if (!form || !listaAgregadas) return;
+
+  function renderAgregadas() {
+    const extras = leerStorage("disponiblesExtra", []) || [];
+    renderTarjetas(extras, "listaAgregadas");
+  }
+  renderAgregadas();
+
+  inputImagen.addEventListener("input", () => {
+    const url = inputImagen.value.trim();
+    if (url) {
+      previewImagen.src = url;
+      previewContainer.style.display = "block";
+    } else previewContainer.style.display = "none";
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nuevaMascota = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      nombre: document.getElementById("nombre").value.trim(),
+      raza: document.getElementById("raza").value.trim(),
+      edad: Number(document.getElementById("edad").value),
+      peso: Number(document.getElementById("peso").value),
+      observaciones: document.getElementById("observaciones").value.trim(),
+      sociable: document.getElementById("sociable").value,
+      cuidados: document.getElementById("cuidados").value.trim(),
+      imagen: inputImagen.value.trim(),
+      estado: "Disponible",
+    };
+
+    let extras = leerStorage("disponiblesExtra", []) || [];
+    extras.push(nuevaMascota);
+    guardarEnStorage("disponiblesExtra", extras);
+    mostrarToast(`La mascota ${nuevaMascota.nombre} fue agregada`, "success");
+    form.reset();
+    previewContainer.style.display = "none";
     renderAgregadas();
 
-    // Preview
-    inputImagen.addEventListener("input", () => {
-      const url = inputImagen.value.trim();
-      if (url) {
-        previewImagen.src = url;
-        previewContainer.style.display = "block";
-      } else {
-        previewContainer.style.display = "none";
-      }
-    });
+    const contenedor = document.getElementById("listaDisponibles");
+    const card = crearCardDisponible(nuevaMascota);
+    contenedor.appendChild(card);
+    cacheDisponibles.push(nuevaMascota);
+  });
+}
 
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const nuevaMascota = {
-        id: Date.now(),
-        nombre: document.getElementById("nombre").value.trim(),
-        raza: document.getElementById("raza").value.trim(),
-        edad: Number(document.getElementById("edad").value),
-        peso: Number(document.getElementById("peso").value),
-        observaciones: document.getElementById("observaciones").value.trim(),
-        sociable: document.getElementById("sociable").value,
-        cuidados: document.getElementById("cuidados").value.trim(),
-        imagen: inputImagen.value.trim(),
-        estado: "Disponible",
-      };
+// ========================== SOLICITUDES ==========================
+export function cargarSolicitudes() {
+  const contenedor = document.getElementById("listaSolicitudes");
+  if (!contenedor) return;
 
-      let extras = leerStorage("disponiblesExtra", []) || [];
+  const solicitudes = leerStorage("solicitudes", []) || [];
+  contenedor.innerHTML = "";
 
-      // Duplicado por misma imagen + mismas características base
-      const existe = extras.some(
-        (m) =>
-          m.nombre.toLowerCase() === nuevaMascota.nombre.toLowerCase() &&
-          m.raza.toLowerCase() === nuevaMascota.raza.toLowerCase() &&
-          m.edad === nuevaMascota.edad &&
-          m.peso === nuevaMascota.peso &&
-          m.imagen === nuevaMascota.imagen
-      );
+  solicitudes.forEach((s) => {
+    const card = crearCardSolicitud(s);
+    contenedor.appendChild(card);
+  });
 
-      if (existe) {
-        Swal.fire(
-          "Duplicado",
-          "Ya existe una mascota con esas características y foto.",
-          "warning"
-        );
-        return;
-      }
+  contenedor.addEventListener("click", manejarClickSolicitud);
+}
 
-      extras.push(nuevaMascota);
-      guardarEnStorage("disponiblesExtra", extras);
+function crearCardSolicitud(s) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.id = s.id;
 
-      Swal.fire(
-        "Agregada",
-        `La mascota ${nuevaMascota.nombre} fue añadida.`,
-        "success"
-      );
-      form.reset();
-      previewContainer.style.display = "none";
-      renderAgregadas();
-    });
+  let adoptanteHTML = s.adoptante
+    ? `<div class="adoptante">
+        <h4>Datos del adoptante</h4>
+        <p><strong>👤 Nombre:</strong> ${s.adoptante.nombre}</p>
+        <p><strong>📞 Teléfono:</strong> ${s.adoptante.telefono}</p>
+        <p><strong>📧 Email:</strong> ${s.adoptante.email}</p>
+        <p><strong>🏠 Dirección:</strong> ${s.adoptante.direccion}</p>
+        <p><strong>🆔 DNI:</strong> ${s.adoptante.dni}</p>
+        <p><strong>💬 Motivo:</strong> ${s.adoptante.motivo}</p>
+      </div>`
+    : "";
 
-    // Eliminar agregadas locales
-    listaAgregadas.addEventListener("click", (e) => {
-      const btn = e.target;
-      if (btn.classList.contains("btn-eliminar")) {
-        const id = Number(btn.dataset.id);
-        let extras = leerStorage("disponiblesExtra", []) || [];
-        extras = extras.filter((m) => m.id !== id);
-        guardarEnStorage("disponiblesExtra", extras);
-        btn.closest(".card").remove();
-        mostrarToast("Mascota eliminada de agregadas", "info");
-      }
-    });
+  let accionesHTML = "";
+  if (s.estado === "Pendiente")
+    accionesHTML = `<button class="btn-adoptar" data-id="${s.id}">Aceptar</button>
+                    <button class="btn-eliminar" data-id="${s.id}">Cancelar</button>`;
+  else if (s.estado === "Adoptada")
+    accionesHTML = `<button class="btn-reactivar" data-id="${s.id}">Reactivar</button>`;
+
+  card.innerHTML = `
+    <img src="${s.imagen}" alt="${s.nombre}" class="img-card" data-full="${s.imagen}">
+    <h3>${s.nombre}</h3>
+    <p>Raza: ${s.raza}</p>
+    <p>Edad: ${s.edad} años</p>
+    ${s.peso ? `<p>Peso: ${s.peso} kg</p>` : ""}
+    ${s.observaciones ? `<p><em>${s.observaciones}</em></p>` : ""}
+    ${s.sociable ? `<p>🐾 Sociable: ${s.sociable}</p>` : ""}
+    ${s.cuidados ? `<p>⚕️ Cuidados: ${s.cuidados}</p>` : ""}
+    <p class="${s.estado === "Adoptada" ? "estado-adoptada" : ""}">Estado: ${s.estado}</p>
+    ${adoptanteHTML}
+    <div class="acciones">
+      ${accionesHTML}
+    </div>
+  `;
+
+  const img = card.querySelector(".img-card");
+  img.addEventListener("click", () => {
+    Swal.fire({ imageUrl: img.dataset.full, showConfirmButton: false, showCloseButton: true, width: 600 });
+  });
+
+  return card;
+}
+
+function manejarClickSolicitud(e) {
+  const btn = e.target;
+  const id = Number(btn.dataset.id);
+  if (!id) return;
+
+  let solicitudes = leerStorage("solicitudes", []) || [];
+  const index = solicitudes.findIndex((s) => s.id === id);
+  if (index === -1) return;
+  const mascota = solicitudes[index];
+
+  // Aceptar
+  if (btn.classList.contains("btn-adoptar")) {
+    solicitudes[index].estado = "Adoptada";
+    guardarEnStorage("solicitudes", solicitudes);
+    actualizarEstadoDisponible(mascota.id, "Adoptada");
+
+    const card = btn.closest(".card");
+    if (card) card.querySelector(".acciones").innerHTML = `<button class="btn-reactivar" data-id="${id}">Reactivar</button>`;
+
+    mostrarToast(`${mascota.nombre} fue adoptada`, "success");
+    actualizarContadorAdoptadas();
+    return;
   }
 
-  // ======= SOLICITUDES =======
-  if (path.includes("solicitudes.html")) {
-    const contenedor = document.getElementById("listaSolicitudes");
-
-    function renderSolicitudes() {
-      const solicitudes = leerStorage("solicitudes", []) || [];
-      contenedor.innerHTML = "";
-      solicitudes.forEach((s) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <img src="${s.imagen}" alt="${
-          s.nombre
-        }" class="img-card" data-full="${s.imagen}">
-          <h3>${s.nombre}</h3>
-          <p>Raza: ${s.raza}</p>
-          <p>Edad: ${s.edad} años</p>
-          <p class="${
-            s.estado === "Adoptada" ? "estado-adoptada" : ""
-          }">Estado: ${s.estado}</p>
-          <div class="adoptante">
-            <h4>Datos del adoptante</h4>
-            <p><strong>👤 Nombre:</strong> ${s.adoptante?.nombre || "-"}</p>
-            <p><strong>📞 Teléfono:</strong> ${s.adoptante?.telefono || "-"}</p>
-            <p><strong>📧 Email:</strong> ${s.adoptante?.email || "-"}</p>
-            <p><strong>🏠 Dirección:</strong> ${
-              s.adoptante?.direccion || "-"
-            }</p>
-            <p><strong>🆔 DNI:</strong> ${s.adoptante?.dni || "-"}</p>
-            <p><strong>💬 Motivo:</strong> ${s.adoptante?.motivo || "-"}</p>
-          </div>
-          <div class="acciones">
-            <button class="btn-eliminar" data-id="${s.id}">Eliminar</button>
-            ${
-              s.estado === "Adoptada"
-                ? `<button class="btn-reactivar" data-id="${s.id}">Reactivar</button>`
-                : ""
-            }
-          </div>
-        `;
-        contenedor.appendChild(card);
-      });
-
-      // ampliar imagen
-      contenedor.querySelectorAll(".img-card").forEach((img) => {
-        img.addEventListener("click", () => {
-          Swal.fire({
-            imageUrl: img.dataset.full,
-            showConfirmButton: false,
-            showCloseButton: true,
-            width: "600px",
-          });
-        });
-      });
-    }
-
-    renderSolicitudes();
-
-    contenedor.addEventListener("click", (e) => {
-      const btn = e.target;
-      const id = Number(btn.dataset.id);
-      if (btn.classList.contains("btn-eliminar")) {
-        let solicitudes = leerStorage("solicitudes", []) || [];
-        solicitudes = solicitudes.filter((m) => m.id !== id);
+  // Cancelar
+  if (btn.classList.contains("btn-eliminar")) {
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: `Cancelar la solicitud de ${mascota.nombre}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        solicitudes.splice(index, 1);
         guardarEnStorage("solicitudes", solicitudes);
-        btn.closest(".card").remove();
-        mostrarToast("Solicitud eliminada", "info");
+
+        let extras = leerStorage("disponiblesExtra", []) || [];
+        if (!extras.some((m) => m.id === mascota.id)) extras.push({ ...mascota, estado: "Disponible" });
+        guardarEnStorage("disponiblesExtra", extras);
+
+        actualizarEstadoDisponible(mascota.id, "Disponible");
+        mostrarToast(`${mascota.nombre} volvió a estar disponible`, "info");
+
+        const card = btn.closest(".card");
+        if (card) card.remove();
       }
-      if (btn.classList.contains("btn-reactivar")) {
-        reactivarMascota(id);
-        renderSolicitudes();
+    });
+    return;
+  }
+
+  // Reactivar
+  if (btn.classList.contains("btn-reactivar")) {
+    Swal.fire({
+      title: "¿Reactivar mascota?",
+      text: `Si confirmás, ${mascota.nombre} volverá a estar disponible`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, reactivar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        solicitudes.splice(index, 1);
+        guardarEnStorage("solicitudes", solicitudes);
+
+        actualizarEstadoDisponible(mascota.id, "Disponible");
+
+        let extras = leerStorage("disponiblesExtra", []) || [];
+        if (!extras.some((m) => m.id === mascota.id)) extras.push({ ...mascota, estado: "Disponible" });
+        guardarEnStorage("disponiblesExtra", extras);
+
+        mostrarToast(`${mascota.nombre} fue reactivada y está disponible`, "success");
+
+        const card = btn.closest(".card");
+        if (card) card.remove();
       }
     });
   }
+}
+
+// ========================== UTIL ==========================
+function actualizarEstadoDisponible(id, estado) {
+  cacheDisponibles = cacheDisponibles.map((m) => (m.id === id ? { ...m, estado } : m));
+  const card = document.querySelector(`#listaDisponibles .card[data-id="${id}"]`);
+  if (!card) return;
+
+  const botonAdoptar = card.querySelector(".btn-adoptar");
+  if (botonAdoptar) {
+    botonAdoptar.textContent = estado === "Disponible" ? "Adoptar" : estado;
+    botonAdoptar.disabled = estado !== "Disponible";
+  }
+
+  const botonEliminar = card.querySelector(".btn-eliminar");
+  if (botonEliminar) botonEliminar.style.display = estado === "Disponible" ? "inline-block" : "none";
+}
+
+// ========================== CONTADOR ADOPTADAS ==========================
+function actualizarContadorAdoptadas() {
+  const numSpan = document.getElementById("numAdoptadas");
+  if (!numSpan) return;
+
+  const solicitudes = leerStorage("solicitudes", []) || [];
+  const adoptadas = solicitudes.filter(s => s.estado === "Adoptada").length;
+
+  let current = 0;
+  const duracionTotal = 3000; // 3 segundos
+  const intervalTime = duracionTotal / (adoptadas || 1);
+
+  const contador = setInterval(() => {
+    current++;
+    numSpan.textContent = current;
+    numSpan.classList.add("latido");
+
+    setTimeout(() => {
+      numSpan.classList.remove("latido");
+    }, 200);
+
+    if (current >= adoptadas) {
+      clearInterval(contador);
+      // Efecto final destacado
+      numSpan.classList.add("destacado");
+      setTimeout(() => numSpan.classList.remove("destacado"), 2500);
+
+      // Opcional: confeti
+      lanzarConfeti();
+    }
+  }, intervalTime);
+}
+
+// Función simple de confeti
+function lanzarConfeti() {
+  const confetiContainer = document.createElement("div");
+  confetiContainer.className = "confeti";
+  for (let i = 0; i < 20; i++) {
+    const span = document.createElement("span");
+    span.style.setProperty("--rand-x", Math.random());
+    span.style.left = `${Math.random() * 100}px`;
+    confetiContainer.appendChild(span);
+  }
+  document.body.appendChild(confetiContainer);
+  setTimeout(() => confetiContainer.remove(), 2000);
+}
+
+// Ejecutar al cargar
+document.addEventListener("DOMContentLoaded", () => {
+  actualizarContadorAdoptadas();
+});
+
+
+// ========================== DOM READY ==========================
+document.addEventListener("DOMContentLoaded", () => {
+  cargarDisponibles();
+  cargarSolicitudes();
+  initAgregar();
+  actualizarContadorAdoptadas();
 });

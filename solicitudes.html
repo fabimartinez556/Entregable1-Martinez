@@ -9,12 +9,21 @@
 <body>
   <nav>
     <h1 class="logo">🐶 Adopción de Mascotas</h1>
-    <ul>
+
+    <!-- Menú principal -->
+    <ul class="nav-links">
       <li><a href="index.html">Inicio</a></li>
       <li><a href="agregar.html">Agregar Mascota</a></li>
       <li><a href="disponibles.html">Disponibles</a></li>
       <li><a href="solicitudes.html" class="active">Solicitudes</a></li>
     </ul>
+
+    <!-- Hamburguesa -->
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </nav>
 
   <main class="contenedor">
@@ -29,5 +38,6 @@
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="js/main.js"></script>
+  <script src="js/animaciones.js" defer></script>
 </body>
 </html>

@@ -15,21 +15,50 @@
       <li><a href="disponibles.html">Disponibles</a></li>
       <li><a href="solicitudes.html">Solicitudes</a></li>
     </ul>
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </nav>
 
   <main class="contenedor">
-    <section class="hero">
-      <h2>¡Encontrá tu nuevo mejor amigo!</h2>
-      <p>Gestioná mascotas disponibles, registrá adopciones con datos completos del adoptante y mantené todo en orden.</p>
-      <div class="cta">
-        <a class="btn" href="disponibles.html">Ver Disponibles</a>
-        <a class="btn btn-sec" href="agregar.html">Agregar Mascota</a>
-      </div>
-    </section>
-  </main>
+ 
+  <section class="hero">
+  <h2 class="fade-in fade-in-delay-1">¡Adoptá y cambiá una vida hoy!</h2>
+  <p class="fade-in fade-in-delay-2">Cada mascota merece un hogar lleno de amor. Encontrá a tu nuevo amigo y ayudá a crear historias felices. ¡Sumate a la adopción responsable!</p>
+
+
+
+<!-- Contador adoptadas con confeti -->
+<div class="contador-adoptadas fade-in fade-in-delay-3">
+  <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Mascota" class="icono-mascota">
+  <span id="numAdoptadas">0</span>
+  <span class="texto"> mascotas adoptadas ❤️</span>
+  <div class="confeti"></div>
+</div>
+
+
+
+  <!-- Mascotas flotantes -->
+  <img src="https://www.anipedia.net/imagenes/perros-800x375.jpg" class="mascota-flotante m1" alt="Mascota 1">
+  <img src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=80" class="mascota-flotante m2" alt="Mascota 2">
+  <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=80" class="mascota-flotante m3" alt="Mascota 3">
+</section>
+ <div class="cta fade-in fade-in-delay-3">
+    <a class="btn" href="disponibles.html">Ver Mascotas Disponibles</a>
+    <a class="btn btn-sec" href="agregar.html">Agregar Mascota</a>
+  </div>
+
+</main>
+
 
   <footer>
     <p>&copy; 2025 Adopción de Mascotas. Todos los derechos reservados.</p>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module" src="js/main.js"></script>
+  <script src="js/animaciones.js" defer></script>
 </body>
 </html>

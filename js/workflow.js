@@ -4,7 +4,7 @@ import { mostrarToast } from "./notifications.js";
 
 /**
  * Abre modal, valida, registra adoptante y mueve mascota a "solicitudes".
- * Devuelve Promise<boolean> que resuelve true si se adoptó.
+ * Devuelve Promise<boolean> que resuelve true si se inició el proceso de adopción.
  */
 export function simularAdopcion(mascota) {
   return new Promise((resolve) => {
@@ -18,7 +18,7 @@ export function simularAdopcion(mascota) {
         <input type="text" id="adoptanteDni" class="swal2-input" placeholder="DNI">
         <textarea id="adoptanteMotivo" class="swal2-textarea" placeholder="¿Por qué querés adoptar?"></textarea>
       `,
-      confirmButtonText: "Confirmar Adopción",
+      confirmButtonText: "Enviar Solicitud",
       focusConfirm: false,
       preConfirm: () => {
         const nombre = document.getElementById("adoptanteNombre").value.trim();
@@ -61,9 +61,10 @@ export function simularAdopcion(mascota) {
         return resolve(false);
       }
 
+      // 🔹 Ahora se guarda como Pendiente, no adoptada directamente
       const nuevaSolicitud = {
         ...mascota,
-        estado: "Adoptada",
+        estado: "Pendiente",
         adoptante: result.value,
       };
       solicitudes.push(nuevaSolicitud);
@@ -75,8 +76,8 @@ export function simularAdopcion(mascota) {
       guardarEnStorage("disponiblesExtra", extras);
 
       Swal.fire(
-        "Adopción confirmada",
-        `${mascota.nombre} fue adoptado 🐾`,
+        "Solicitud enviada",
+        `${mascota.nombre} está en proceso de adopción 🐾`,
         "success"
       );
       resolve(true);
@@ -84,17 +85,25 @@ export function simularAdopcion(mascota) {
   });
 }
 
+/**
+ * Reactiva una mascota adoptada → vuelve a disponibles.
+ */
 export function reactivarMascota(mascotaId) {
   let solicitudes = leerStorage("solicitudes", []) || [];
   const mascota = solicitudes.find((m) => m.id == mascotaId);
 
   if (mascota) {
+    // Eliminar de solicitudes
     solicitudes = solicitudes.filter((m) => m.id != mascotaId);
     guardarEnStorage("solicitudes", solicitudes);
 
-    const extras = leerStorage("disponiblesExtra", []) || [];
-    extras.push({ ...mascota, estado: "Disponible" });
-    guardarEnStorage("disponiblesExtra", extras);
+    // Reactivar en disponiblesExtra, evitando duplicados
+    let extras = leerStorage("disponiblesExtra", []) || [];
+    const yaExiste = extras.some((m) => m.id == mascota.id);
+    if (!yaExiste) {
+      extras.push({ ...mascota, estado: "Disponible" });
+      guardarEnStorage("disponiblesExtra", extras);
+    }
 
     mostrarToast(`${mascota.nombre} fue reactivado y está disponible`, "info");
   }
