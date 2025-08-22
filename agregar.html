@@ -1,71 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agregar Mascota</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <nav>
-    <h1 class="logo">🐶 Adopción de Mascotas</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agregar Mascota</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <nav>
+      <h1 class="logo">🐶 Adopción de Mascotas</h1>
 
-    <!-- Menú principal -->
-    <ul class="nav-links">
-      <li><a href="index.html">Inicio</a></li>
-      <li><a href="agregar.html" class="active">Agregar Mascota</a></li>
-      <li><a href="disponibles.html">Disponibles</a></li>
-      <li><a href="solicitudes.html">Solicitudes</a></li>
-    </ul>
+      <!-- Menú principal -->
+      <ul class="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="agregar.html" class="active">Agregar Mascota</a></li>
+        <li><a href="disponibles.html">Disponibles</a></li>
+        <li><a href="solicitudes.html">Solicitudes</a></li>
+      </ul>
 
-    <!-- Hamburguesa -->
-    <div class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </nav>
-
-  <main class="contenedor">
-    <h2>Agregar Mascota</h2>
-
-    <form id="formAgregar" class="formulario">
-      <input type="text" id="nombre" placeholder="Nombre" required />
-      <input type="text" id="raza" placeholder="Raza" required />
-      <input type="number" id="edad" placeholder="Edad (máx 20)" min="0" max="20" required />
-      <input type="number" step="0.1" id="peso" placeholder="Peso (kg)" min="0.5" max="80" required />
-
-      <textarea id="observaciones" placeholder="Observaciones adicionales"></textarea>
-
-      <label for="sociable">¿Es sociable con otras mascotas?</label>
-      <select id="sociable" required>
-        <option value="Sí">Sí</option>
-        <option value="No">No</option>
-      </select>
-
-      <textarea id="cuidados" placeholder="Cuidados especiales (dieta, medicación, otros)"></textarea>
-
-      <input type="url" id="imagen" placeholder="URL de imagen" required />
-
-      <div id="previewContainer" style="margin-top:10px; display:none;">
-        <p>Vista previa:</p>
-        <img id="previewImagen" src="" alt="Vista previa" class="img-card" style="max-width:200px;">
+      <!-- Hamburguesa -->
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
+    </nav>
 
-      <button type="submit" class="btn-agregar btn">Agregar Mascota</button>
-    </form>
+    <main class="contenedor">
+      <h2>Agregar Mascota</h2>
 
-    <h3>Mascotas agregadas (local)</h3>
-    <div id="listaAgregadas" class="grid"></div>
-  </main>
+      <form id="formAgregar" class="formulario">
+        <input type="text" id="nombre" placeholder="Nombre" required />
+        <input type="text" id="raza" placeholder="Raza" required />
+        <input
+          type="number"
+          id="edad"
+          placeholder="Edad (máx 20)"
+          min="0"
+          max="20"
+          required
+        />
+        <input
+          type="number"
+          step="0.1"
+          id="peso"
+          placeholder="Peso (kg)"
+          min="0.5"
+          max="80"
+          required
+        />
 
-  <footer>
-    <p>&copy; 2025 Adopción de Mascotas.</p>
-  </footer>
+        <textarea
+          id="observaciones"
+          placeholder="Observaciones adicionales"
+        ></textarea>
 
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script type="module" src="js/main.js"></script>
-  <script src="js/animaciones.js" defer></script>
-</body>
+        <label for="sociable">¿Es sociable con otras mascotas?</label>
+        <select id="sociable" required>
+          <option value="Sí">Sí</option>
+          <option value="No">No</option>
+        </select>
+
+        <textarea
+          id="cuidados"
+          placeholder="Cuidados especiales (dieta, medicación, otros)"
+        ></textarea>
+
+        <input type="url" id="imagen" placeholder="URL de imagen" required />
+
+        <div id="previewContainer" style="margin-top: 10px; display: none">
+          <p>Vista previa:</p>
+          <img
+            id="previewImagen"
+            src=""
+            alt="Vista previa"
+            class="img-card"
+            style="max-width: 200px"
+          />
+        </div>
+
+        <button type="submit" class="btn-agregar btn">Agregar Mascota</button>
+      </form>
+
+      <h3>Mascotas agregadas (local)</h3>
+      <div id="listaAgregadas" class="grid"></div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Adopción de Mascotas.</p>
+    </footer>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="js/main.js"></script>
+    <script src="js/animaciones.js" defer></script>
+  </body>
 </html>

@@ -58,7 +58,9 @@ function crearCardDisponible(item) {
       : "";
 
   card.innerHTML = `
-    <img src="${item.imagen}" alt="${item.nombre}" class="img-card" data-full="${item.imagen}">
+    <img src="${item.imagen}" alt="${
+    item.nombre
+  }" class="img-card" data-full="${item.imagen}">
     <h3>${item.nombre}</h3>
     <p>Raza: ${item.raza}</p>
     <p>Edad: ${item.edad} años</p>
@@ -66,7 +68,9 @@ function crearCardDisponible(item) {
     ${item.observaciones ? `<p><em>${item.observaciones}</em></p>` : ""}
     ${item.sociable ? `<p>🐾 Sociable: ${item.sociable}</p>` : ""}
     ${item.cuidados ? `<p>⚕️ Cuidados: ${item.cuidados}</p>` : ""}
-    <p class="${item.estado === "Adoptada" ? "estado-adoptada" : ""}">Estado: ${item.estado}</p>
+    <p class="${item.estado === "Adoptada" ? "estado-adoptada" : ""}">Estado: ${
+    item.estado
+  }</p>
     <div class="acciones">
       ${botonAdoptar}
       ${botonEliminar}
@@ -97,7 +101,10 @@ async function manejarClickDisponible(e) {
   if (mascotaIndex === -1) return;
   const mascota = cacheDisponibles[mascotaIndex];
 
-  if (btn.classList.contains("btn-adoptar") && mascota.estado === "Disponible") {
+  if (
+    btn.classList.contains("btn-adoptar") &&
+    mascota.estado === "Disponible"
+  ) {
     actualizarEstadoDisponible(mascota.id, "Pendiente confirmacion");
 
     simularAdopcion(mascota).then((ok) => {
@@ -215,7 +222,9 @@ function crearCardSolicitud(s) {
     accionesHTML = `<button class="btn-reactivar" data-id="${s.id}">Reactivar</button>`;
 
   card.innerHTML = `
-    <img src="${s.imagen}" alt="${s.nombre}" class="img-card" data-full="${s.imagen}">
+    <img src="${s.imagen}" alt="${s.nombre}" class="img-card" data-full="${
+    s.imagen
+  }">
     <h3>${s.nombre}</h3>
     <p>Raza: ${s.raza}</p>
     <p>Edad: ${s.edad} años</p>
@@ -223,7 +232,9 @@ function crearCardSolicitud(s) {
     ${s.observaciones ? `<p><em>${s.observaciones}</em></p>` : ""}
     ${s.sociable ? `<p>🐾 Sociable: ${s.sociable}</p>` : ""}
     ${s.cuidados ? `<p>⚕️ Cuidados: ${s.cuidados}</p>` : ""}
-    <p class="${s.estado === "Adoptada" ? "estado-adoptada" : ""}">Estado: ${s.estado}</p>
+    <p class="${s.estado === "Adoptada" ? "estado-adoptada" : ""}">Estado: ${
+    s.estado
+  }</p>
     ${adoptanteHTML}
     <div class="acciones">
       ${accionesHTML}
@@ -232,7 +243,12 @@ function crearCardSolicitud(s) {
 
   const img = card.querySelector(".img-card");
   img.addEventListener("click", () => {
-    Swal.fire({ imageUrl: img.dataset.full, showConfirmButton: false, showCloseButton: true, width: 600 });
+    Swal.fire({
+      imageUrl: img.dataset.full,
+      showConfirmButton: false,
+      showCloseButton: true,
+      width: 600,
+    });
   });
 
   return card;
@@ -255,7 +271,10 @@ function manejarClickSolicitud(e) {
     actualizarEstadoDisponible(mascota.id, "Adoptada");
 
     const card = btn.closest(".card");
-    if (card) card.querySelector(".acciones").innerHTML = `<button class="btn-reactivar" data-id="${id}">Reactivar</button>`;
+    if (card)
+      card.querySelector(
+        ".acciones"
+      ).innerHTML = `<button class="btn-reactivar" data-id="${id}">Reactivar</button>`;
 
     mostrarToast(`${mascota.nombre} fue adoptada`, "success");
     actualizarContadorAdoptadas();
@@ -277,7 +296,8 @@ function manejarClickSolicitud(e) {
         guardarEnStorage("solicitudes", solicitudes);
 
         let extras = leerStorage("disponiblesExtra", []) || [];
-        if (!extras.some((m) => m.id === mascota.id)) extras.push({ ...mascota, estado: "Disponible" });
+        if (!extras.some((m) => m.id === mascota.id))
+          extras.push({ ...mascota, estado: "Disponible" });
         guardarEnStorage("disponiblesExtra", extras);
 
         actualizarEstadoDisponible(mascota.id, "Disponible");
@@ -307,10 +327,14 @@ function manejarClickSolicitud(e) {
         actualizarEstadoDisponible(mascota.id, "Disponible");
 
         let extras = leerStorage("disponiblesExtra", []) || [];
-        if (!extras.some((m) => m.id === mascota.id)) extras.push({ ...mascota, estado: "Disponible" });
+        if (!extras.some((m) => m.id === mascota.id))
+          extras.push({ ...mascota, estado: "Disponible" });
         guardarEnStorage("disponiblesExtra", extras);
 
-        mostrarToast(`${mascota.nombre} fue reactivada y está disponible`, "success");
+        mostrarToast(
+          `${mascota.nombre} fue reactivada y está disponible`,
+          "success"
+        );
 
         const card = btn.closest(".card");
         if (card) card.remove();
@@ -321,8 +345,12 @@ function manejarClickSolicitud(e) {
 
 // ========================== UTIL ==========================
 function actualizarEstadoDisponible(id, estado) {
-  cacheDisponibles = cacheDisponibles.map((m) => (m.id === id ? { ...m, estado } : m));
-  const card = document.querySelector(`#listaDisponibles .card[data-id="${id}"]`);
+  cacheDisponibles = cacheDisponibles.map((m) =>
+    m.id === id ? { ...m, estado } : m
+  );
+  const card = document.querySelector(
+    `#listaDisponibles .card[data-id="${id}"]`
+  );
   if (!card) return;
 
   const botonAdoptar = card.querySelector(".btn-adoptar");
@@ -332,7 +360,9 @@ function actualizarEstadoDisponible(id, estado) {
   }
 
   const botonEliminar = card.querySelector(".btn-eliminar");
-  if (botonEliminar) botonEliminar.style.display = estado === "Disponible" ? "inline-block" : "none";
+  if (botonEliminar)
+    botonEliminar.style.display =
+      estado === "Disponible" ? "inline-block" : "none";
 }
 
 // ========================== CONTADOR ADOPTADAS ==========================
@@ -341,7 +371,7 @@ function actualizarContadorAdoptadas() {
   if (!numSpan) return;
 
   const solicitudes = leerStorage("solicitudes", []) || [];
-  const adoptadas = solicitudes.filter(s => s.estado === "Adoptada").length;
+  const adoptadas = solicitudes.filter((s) => s.estado === "Adoptada").length;
 
   let current = 0;
   const duracionTotal = 3000; // 3 segundos
@@ -386,7 +416,6 @@ function lanzarConfeti() {
 document.addEventListener("DOMContentLoaded", () => {
   actualizarContadorAdoptadas();
 });
-
 
 // ========================== DOM READY ==========================
 document.addEventListener("DOMContentLoaded", () => {
