@@ -380,7 +380,7 @@ function actualizarContadorAdoptadas() {
   }
 
   let current = 0;
-  const duracionTotal = 3000; // 3 segundos
+  const duracionTotal = 4000;
   const intervalTime = duracionTotal / adoptadas;
 
   const contador = setInterval(() => {
@@ -401,19 +401,32 @@ function actualizarContadorAdoptadas() {
   }, intervalTime);
 }
 
-
 // Función simple de confeti
 function lanzarConfeti() {
   const confetiContainer = document.createElement("div");
   confetiContainer.className = "confeti";
-  for (let i = 0; i < 20; i++) {
+
+  for (let i = 0; i < 30; i++) {
+    // más confetis
     const span = document.createElement("span");
     span.style.setProperty("--rand-x", Math.random());
-    span.style.left = `${Math.random() * 100}px`;
+    span.style.left = `${Math.random() * window.innerWidth}px`;
+
+    // duración aleatoria entre 4s y 10s
+    const duracion = (4 + Math.random() * 6).toFixed(2) + "s";
+    span.style.setProperty("--duracion", duracion);
+
+    // delay aleatorio hasta 2s
+    const delay = (Math.random() * 2).toFixed(2) + "s";
+    span.style.setProperty("--delay", delay);
+
     confetiContainer.appendChild(span);
   }
+
   document.body.appendChild(confetiContainer);
-  setTimeout(() => confetiContainer.remove(), 2000);
+
+  // borrar después de que termine la animación
+  setTimeout(() => confetiContainer.remove(), 10000); // mismo tiempo que animation-duration
 }
 
 // Ejecutar al cargar

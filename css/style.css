@@ -457,12 +457,13 @@ nav a:hover {
 
 .confeti {
   position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 0;
-  height: 0;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   overflow: visible;
+  z-index: 9999; /* siempre al frente */
 }
 
 .confeti span {
@@ -471,8 +472,21 @@ nav a:hover {
   height: 20px;
   background: url("https://cdn-icons-png.flaticon.com/512/616/616408.png")
     no-repeat center/contain;
-  opacity: 0.8;
-  animation: flotar 2s linear forwards;
+  opacity: 0.9;
+  animation: flotar var(--duracion) linear forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes flotar {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-100px + 200px * var(--rand-x)), 100vh)
+      rotate(720deg);
+    opacity: 0;
+  }
 }
 
 @keyframes latido {
@@ -490,25 +504,35 @@ nav a:hover {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.6);
-  }
-}
-@keyframes flotar {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(calc(-50px + 100px * var(--rand-x)), -150px)
-      rotate(360deg);
-    opacity: 0;
+    transform: scale(2.6);
   }
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
+
 @media (max-width: 768px) {
+  .hamburger {
+    display: flex; /* visible en mobile */
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 60px; /* debajo del header */
+    right: 0;
+    width: 200px;
+    background: #333;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    display: none; /* oculto por defecto */
+    z-index: 1000;
+  }
+
+  .nav-menu.active {
+    display: flex; /* aparece al abrir */
+  }
   nav ul {
     position: absolute;
     top: 64px;
