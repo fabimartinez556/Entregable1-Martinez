@@ -15,7 +15,7 @@ export function guardarEnStorage(clave, valor) {
 /**
  * Lee un valor de localStorage (parseado desde JSON).
  * @param {string} clave
- * @param {any} porDefecto Valor que se retorna si no existe o hay error
+ * @param {any} porDefecto 
  * @returns {any}
  */
 export function leerStorage(clave, porDefecto = null) {

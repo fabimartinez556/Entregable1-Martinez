@@ -110,9 +110,9 @@ nav a:hover {
 ========================= */
 .hero {
   position: relative;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("https://images.unsplash.com/photo-1617196032912-c17e6bda07e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg")
-      no-repeat center/cover;
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    url("https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1350&q=80")
+      no-repeat center/cover; /* Imagen de pasto */
   color: #fff;
   padding: 80px 24px;
   border-radius: 20px;
@@ -121,22 +121,23 @@ nav a:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Efecto de sombreado suave sobre el pasto */
 .hero::after {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
     circle at center,
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.6)
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.3)
   );
   border-radius: 20px;
   z-index: 1;
 }
-
+/* Texto hero encima del fondo */
 .hero-text {
   position: relative;
-  z-index: 2;
+  z-index: 9999;
   max-width: 720px;
   margin: 0 auto;
   padding: 0 12px;
@@ -147,16 +148,18 @@ nav a:hover {
   margin-bottom: 20px;
   font-weight: 800;
   line-height: 1.2;
-  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.6);
-  color: #fffbf0;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  z-index: 9999;
 }
 
 .hero p {
   font-size: 1.2rem;
   line-height: 1.7;
   margin-bottom: 30px;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-  color: #fdf6e3;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  z-index: 9999;
 }
 
 /* =========================
@@ -360,34 +363,32 @@ nav a:hover {
   height: 90px;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  animation: float 6s ease-in-out infinite;
-  z-index: 2;
+  box-shadow: 0 8px 50px rgba(0, 0, 0, 0.2);
+  animation: float 12s ease-in-out infinite;
+  z-index: 1; /* bajamos para que no tape contenido */
+  pointer-events: none; /* evita que bloqueen clicks */
 }
 
 .m1 {
-  top: 20%;
-  left: 10%;
-  animation-delay: 0s;
+  top: 25%;
+  left: 5%;
 }
 .m2 {
-  top: 50%;
-  left: 80%;
-  animation-delay: 2s;
+  top: 65%;
+  left: 85%;
 }
 .m3 {
-  top: 70%;
-  left: 30%;
-  animation-delay: 4s;
+  top: 75%;
+  left: 25%;
 }
 
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(-0) rotate(0deg);
   }
   50% {
-    transform: translateY(-15px) rotate(5deg);
+    transform: translateY(-150px) rotate(5deg);
   }
 }
 
@@ -600,5 +601,190 @@ nav a:hover {
   .mascota-flotante {
     width: 55px;
     height: 55px;
+  }
+}
+@media (max-width: 768px) {
+  .mascota-flotante {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mascota-flotante {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+  background: linear-gradient(135deg, var(--brand), var(--brand2));
+  color: #fff;
+  padding: 40px 20px;
+  margin-top: 50px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+
+footer .footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 30px;
+}
+
+footer h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+footer p,
+footer a {
+  font-size: 0.95rem;
+  color: #f3f4f6;
+}
+
+footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Redes sociales */
+footer .social {
+  display: flex;
+  gap: 14px;
+  margin-top: 15px;
+}
+
+footer .social a {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 20px;
+  transition: 0.3s;
+  animation: pulse 2s infinite;
+}
+
+/* Colores oficiales de cada red */
+footer .social a.facebook {
+  background: #1877f2;
+  animation-delay: 0s;
+}
+footer .social a.instagram {
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  animation-delay: 0.3s;
+}
+footer .social a.whatsapp {
+  background: #25d366;
+  animation-delay: 0.6s;
+}
+
+/* Hover de redes */
+footer .social a:hover {
+  transform: translateY(-3px) scale(1.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Animación de pulso desfasada */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Copia y derechos */
+footer .copy {
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: #e5e7eb;
+}
+/* =========================
+   FOOTER COMPACTO MOBILE
+========================= */
+@media (max-width: 640px) {
+  footer {
+    padding: 30px 16px; /* Menos padding para que no ocupe tanto */
+  }
+
+  footer .footer-container {
+    gap: 20px; /* Menor separación entre secciones */
+  }
+
+  footer h3 {
+    font-size: 1rem; /* Títulos más pequeños */
+  }
+
+  footer p,
+  footer a {
+    font-size: 0.85rem; /* Texto más compacto */
+  }
+
+  footer .social {
+    justify-content: center; /* Centrado en móviles */
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  footer .social a {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  footer .copy {
+    font-size: 0.75rem; /* Más compacto */
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+}
+
+/* Footer extra pequeño para muy pequeños (<480px) */
+@media (max-width: 480px) {
+  footer {
+    padding: 24px 12px;
+  }
+
+  footer h3 {
+    font-size: 0.95rem;
+  }
+
+  footer p,
+  footer a {
+    font-size: 0.8rem;
+  }
+
+  footer .social a {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  footer .copy {
+    font-size: 0.7rem;
+    margin-top: 16px;
+    padding-top: 12px;
   }
 }
