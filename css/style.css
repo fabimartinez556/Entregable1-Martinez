@@ -26,6 +26,7 @@ body {
   color: var(--text);
   font-family: "Segoe UI", Roboto, Ubuntu, sans-serif;
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 a {
@@ -281,8 +282,9 @@ nav a:hover {
 
 .card img,
 .img-card {
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
   object-fit: cover;
   border-radius: 12px;
   display: block;
@@ -290,7 +292,11 @@ nav a:hover {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
-
+/* Contenedor de preview */
+#previewContainer {
+  max-width: 100%; 
+  overflow-x: hidden;
+}
 /* =========================
    FORMULARIOS
 ========================= */
@@ -471,7 +477,6 @@ nav a:hover {
     opacity: 0;
   }
 }
-
 
 @keyframes latido {
   0%,
