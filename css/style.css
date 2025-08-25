@@ -50,13 +50,13 @@ nav {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 1002;
 }
 
 nav .logo {
-  margin: 0;
   font-size: 22px;
   font-weight: 600;
+  z-index: 1002;
 }
 
 nav ul {
@@ -65,6 +65,7 @@ nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  z-index: 1001;
 }
 
 nav a {
@@ -85,6 +86,7 @@ nav a:hover {
   flex-direction: column;
   gap: 5px;
   cursor: pointer;
+  z-index: 1002;
 }
 
 .hamburger span {
@@ -112,7 +114,7 @@ nav a:hover {
   position: relative;
   background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
     url("https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1350&q=80")
-      no-repeat center/cover; /* Imagen de pasto */
+      no-repeat center/cover;
   color: #fff;
   padding: 80px 24px;
   border-radius: 20px;
@@ -121,7 +123,6 @@ nav a:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Efecto de sombreado suave sobre el pasto */
 .hero::after {
   content: "";
   position: absolute;
@@ -134,7 +135,7 @@ nav a:hover {
   border-radius: 20px;
   z-index: 1;
 }
-/* Texto hero encima del fondo */
+
 .hero-text {
   position: relative;
   z-index: 9999;
@@ -149,8 +150,6 @@ nav a:hover {
   font-weight: 800;
   line-height: 1.2;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-  color: #fff;
-  z-index: 9999;
 }
 
 .hero p {
@@ -158,8 +157,6 @@ nav a:hover {
   line-height: 1.7;
   margin-bottom: 30px;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-  color: #fff;
-  z-index: 9999;
 }
 
 /* =========================
@@ -173,14 +170,6 @@ nav a:hover {
   flex-wrap: wrap;
 }
 
-.cta a.btn,
-.cta a.btn-sec {
-  font-weight: 600;
-  font-size: 15px;
-  padding: 14px 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-}
-
 .btn {
   background: var(--brand);
   color: #fff;
@@ -191,6 +180,7 @@ nav a:hover {
   font-weight: 500;
   cursor: pointer;
   transition: 0.25s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 .btn:hover {
@@ -289,7 +279,6 @@ nav a:hover {
   font-weight: 600;
 }
 
-/* Imagen uniforme */
 .card img,
 .img-card {
   width: 200px;
@@ -324,7 +313,6 @@ nav a:hover {
   border-radius: 10px;
   transition: 0.2s;
 }
-
 .formulario input:focus,
 .formulario textarea:focus,
 .formulario select:focus {
@@ -332,19 +320,16 @@ nav a:hover {
   outline: none;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
-
 .formulario textarea {
   grid-column: 1/-1;
   min-height: 90px;
   resize: vertical;
 }
-
 .btn-agregar {
   grid-column: 1/-1;
   justify-self: start;
 }
 
-/* Adoptante */
 .adoptante {
   background: #f9fafb;
   border: 1px dashed #d1d5db;
@@ -365,10 +350,9 @@ nav a:hover {
   border-radius: 50%;
   box-shadow: 0 8px 50px rgba(0, 0, 0, 0.2);
   animation: float 12s ease-in-out infinite;
-  z-index: 1; /* bajamos para que no tape contenido */
-  pointer-events: none; /* evita que bloqueen clicks */
+  z-index: 1;
+  pointer-events: none;
 }
-
 .m1 {
   top: 25%;
   left: 5%;
@@ -385,7 +369,7 @@ nav a:hover {
 @keyframes float {
   0%,
   100% {
-    transform: translateY(-0) rotate(0deg);
+    transform: translateY(0) rotate(0deg);
   }
   50% {
     transform: translateY(-150px) rotate(5deg);
@@ -436,13 +420,11 @@ nav a:hover {
   position: relative;
   overflow: visible;
 }
-
 .contador-adoptadas #numAdoptadas {
   font-size: 64px;
   display: inline-block;
   transition: transform 0.2s, color 0.3s;
 }
-
 .contador-adoptadas .latido {
   animation: latido 0.3s ease-in-out infinite;
 }
@@ -464,9 +446,8 @@ nav a:hover {
   height: 100%;
   pointer-events: none;
   overflow: visible;
-  z-index: 9999; /* siempre al frente */
+  z-index: 9999;
 }
-
 .confeti span {
   position: absolute;
   width: 20px;
@@ -512,51 +493,41 @@ nav a:hover {
 /* =========================
    RESPONSIVE
 ========================= */
-
 @media (max-width: 768px) {
   .hamburger {
-    display: flex; /* visible en mobile */
+    display: flex;
+    z-index: 1001;
   }
 
-  .nav-menu {
-    position: absolute;
-    top: 60px; /* debajo del header */
-    right: 0;
-    width: 200px;
-    background: #333;
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-    display: none; /* oculto por defecto */
-    z-index: 1000;
-  }
-
-  .nav-menu.active {
-    display: flex; /* aparece al abrir */
-  }
   nav ul {
-    position: absolute;
-    top: 64px;
+    position: fixed;
+    top: 0;
     right: 0;
+    height: 100vh;
+    width: 220px;
     background: linear-gradient(90deg, var(--brand), var(--brand2));
     flex-direction: column;
-    width: 200px;
-    padding: 14px;
-    border-radius: 0 0 12px 12px;
+    padding-top: 80px;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    display: flex;
+    gap: 20px;
   }
   nav ul.show {
     transform: translateX(0);
   }
   nav a {
-    padding: 10px;
-    border-radius: 8px;
-  }
-  .hamburger {
-    display: flex;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 0;
   }
 
+  .hero,
+  .mascota-flotante {
+    z-index: 0;
+  }
   .hero h2 {
     font-size: 2rem;
   }
@@ -599,19 +570,6 @@ nav a:hover {
     font-size: 0.95rem;
   }
   .mascota-flotante {
-    width: 55px;
-    height: 55px;
-  }
-}
-@media (max-width: 768px) {
-  .mascota-flotante {
-    width: 70px;
-    height: 70px;
-  }
-}
-
-@media (max-width: 480px) {
-  .mascota-flotante {
     width: 50px;
     height: 50px;
   }
@@ -628,7 +586,6 @@ footer {
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
 }
-
 footer .footer-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -636,31 +593,25 @@ footer .footer-container {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 30px;
 }
-
 footer h3 {
   font-size: 1.2rem;
   margin-bottom: 15px;
   font-weight: 600;
 }
-
 footer p,
 footer a {
   font-size: 0.95rem;
   color: #f3f4f6;
 }
-
 footer a:hover {
   color: #fff;
   text-decoration: underline;
 }
-
-/* Redes sociales */
 footer .social {
   display: flex;
   gap: 14px;
   margin-top: 15px;
 }
-
 footer .social a {
   width: 44px;
   height: 44px;
@@ -673,8 +624,6 @@ footer .social a {
   transition: 0.3s;
   animation: pulse 2s infinite;
 }
-
-/* Colores oficiales de cada red */
 footer .social a.facebook {
   background: #1877f2;
   animation-delay: 0s;
@@ -694,14 +643,10 @@ footer .social a.whatsapp {
   background: #25d366;
   animation-delay: 0.6s;
 }
-
-/* Hover de redes */
 footer .social a:hover {
   transform: translateY(-3px) scale(1.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-
-/* Animación de pulso desfasada */
 @keyframes pulse {
   0%,
   100% {
@@ -711,8 +656,6 @@ footer .social a:hover {
     transform: scale(1.1);
   }
 }
-
-/* Copia y derechos */
 footer .copy {
   text-align: center;
   font-size: 0.85rem;
@@ -721,67 +664,54 @@ footer .copy {
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   color: #e5e7eb;
 }
-/* =========================
-   FOOTER COMPACTO MOBILE
-========================= */
+
 @media (max-width: 640px) {
   footer {
-    padding: 30px 16px; /* Menos padding para que no ocupe tanto */
+    padding: 30px 16px;
   }
-
   footer .footer-container {
-    gap: 20px; /* Menor separación entre secciones */
+    gap: 20px;
   }
-
   footer h3 {
-    font-size: 1rem; /* Títulos más pequeños */
+    font-size: 1rem;
   }
-
   footer p,
   footer a {
-    font-size: 0.85rem; /* Texto más compacto */
+    font-size: 0.85rem;
   }
-
   footer .social {
-    justify-content: center; /* Centrado en móviles */
+    justify-content: center;
     gap: 12px;
     margin-top: 12px;
   }
-
   footer .social a {
     width: 36px;
     height: 36px;
     font-size: 18px;
   }
-
   footer .copy {
-    font-size: 0.75rem; /* Más compacto */
+    font-size: 0.75rem;
     margin-top: 20px;
     padding-top: 16px;
   }
 }
 
-/* Footer extra pequeño para muy pequeños (<480px) */
 @media (max-width: 480px) {
   footer {
     padding: 24px 12px;
   }
-
   footer h3 {
     font-size: 0.95rem;
   }
-
   footer p,
   footer a {
     font-size: 0.8rem;
   }
-
   footer .social a {
     width: 32px;
     height: 32px;
     font-size: 16px;
   }
-
   footer .copy {
     font-size: 0.7rem;
     margin-top: 16px;
