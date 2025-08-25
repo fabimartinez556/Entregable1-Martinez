@@ -11,10 +11,10 @@
     />
   </head>
   <body>
+    <!-- NAVBAR -->
     <nav>
       <h1 class="logo">🐶 Adopción de Mascotas</h1>
 
-      <!-- Menú principal -->
       <ul class="nav-links">
         <li><a href="index.html">Inicio</a></li>
         <li><a href="agregar.html" class="active">Agregar Mascota</a></li>
@@ -22,7 +22,6 @@
         <li><a href="solicitudes.html">Solicitudes</a></li>
       </ul>
 
-      <!-- Hamburguesa -->
       <div class="hamburger">
         <span></span>
         <span></span>
@@ -30,65 +29,89 @@
       </div>
     </nav>
 
+    <!-- MAIN -->
     <main class="contenedor">
-      <h2>Agregar Mascota</h2>
+      <h2 class="fade-in fade-in-delay-1">Agregar Mascota</h2>
 
-      <form id="formAgregar" class="formulario">
-        <input type="text" id="nombre" placeholder="Nombre" required />
-        <input type="text" id="raza" placeholder="Raza" required />
-        <input
-          type="number"
-          id="edad"
-          placeholder="Edad (máx 20)"
-          min="0"
-          max="20"
-          required
-        />
-        <input
-          type="number"
-          step="0.1"
-          id="peso"
-          placeholder="Peso (kg)"
-          min="0.5"
-          max="80"
-          required
-        />
+      <form id="formAgregar" class="formulario fade-in fade-in-delay-2">
+        <div class="input-icon">
+          <i class="fa-solid fa-paw"></i>
+          <input type="text" id="nombre" placeholder="Nombre" required />
+        </div>
 
-        <textarea
-          id="observaciones"
-          placeholder="Observaciones adicionales"
-        ></textarea>
+        <div class="input-icon">
+          <i class="fa-solid fa-dog"></i>
+          <input type="text" id="raza" placeholder="Raza" required />
+        </div>
 
-        <label for="sociable">¿Es sociable con otras mascotas?</label>
-        <select id="sociable" required>
-          <option value="Sí">Sí</option>
-          <option value="No">No</option>
-        </select>
+        <div class="input-icon">
+          <i class="fa-solid fa-calendar-days"></i>
+          <input
+            type="number"
+            id="edad"
+            placeholder="Edad (máx 20)"
+            min="0"
+            max="20"
+            required
+          />
+        </div>
 
-        <textarea
-          id="cuidados"
-          placeholder="Cuidados especiales (dieta, medicación, otros)"
-        ></textarea>
+        <div class="input-icon">
+          <i class="fa-solid fa-weight-scale"></i>
+          <input
+            type="number"
+            step="0.1"
+            id="peso"
+            placeholder="Peso (kg)"
+            min="0.5"
+            max="80"
+            required
+          />
+        </div>
 
-        <input type="url" id="imagen" placeholder="URL de imagen" required />
+        <div class="input-icon" style="grid-column:1/-1">
+          <i class="fa-solid fa-note-sticky"></i>
+          <textarea
+            id="observaciones"
+            placeholder="Observaciones adicionales"
+          ></textarea>
+        </div>
+
+        <div class="input-icon" style="grid-column:1/-1">
+          <i class="fa-solid fa-users"></i>
+          <label for="sociable">¿Es sociable con otras mascotas?</label>
+          <select id="sociable" required>
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="input-icon" style="grid-column:1/-1">
+          <i class="fa-solid fa-heart-pulse"></i>
+          <textarea
+            id="cuidados"
+            placeholder="Cuidados especiales (dieta, medicación, otros)"
+          ></textarea>
+        </div>
+
+        <div class="input-icon" style="grid-column:1/-1">
+          <i class="fa-solid fa-image"></i>
+          <input type="url" id="imagen" placeholder="URL de imagen" required />
+        </div>
 
         <div id="previewContainer" style="margin-top: 10px; display: none">
           <p>Vista previa:</p>
-          <img
-            id="previewImagen"
-            src=""
-            alt="Vista previa"
-            class="img-card"
-                      />
+          <img id="previewImagen" src="" alt="Vista previa" class="img-card" />
         </div>
 
         <button type="submit" class="btn-agregar btn">Agregar Mascota</button>
       </form>
 
-      <h3>Mascotas agregadas (local)</h3>
+      <h3 class="fade-in fade-in-delay-3">Mascotas agregadas (local)</h3>
       <div id="listaAgregadas" class="grid"></div>
     </main>
 
+    <!-- FOOTER -->
     <footer>
       <div class="footer-container">
         <div>
@@ -119,7 +142,7 @@
       </p>
     </footer>
 
-    <!-- SweetAlert2 -->
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="js/main.js"></script>
     <script src="js/animaciones.js" defer></script>
